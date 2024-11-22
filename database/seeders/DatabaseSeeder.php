@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Borrower;
+use App\Models\Item;
+use App\Models\Lender;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,12 +16,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create users
+        $users = User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Alec Squire',
-            'email' => 'alecsquire@gmail.com',
-            'password' => bcrypt('Mywellmadepassword'),
+        // Create borrowers
+        $borrowers = Borrower::factory(50)->create();
+
+        // Create lenders
+        $lenders = Lender::factory(50)->create();
+
+
+        // Create items and associate them with users and borrowers
+        Item::factory(50)->create([
+            'user_id' => $users->random()->id, // Randomly associate with a user
+            'borrower_id' => $borrowers->random()->id, // Randomly associate with a borrower
         ]);
     }
 }

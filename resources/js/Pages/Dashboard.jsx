@@ -1,3 +1,4 @@
+import LenderApp from '@/Components/LenderApp';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
@@ -5,19 +6,22 @@ export default function Dashboard() {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
+
+
+            <div className="flex-shrink-0 flex items-center">
+              <span className="text-2xl font-semibold text-blue-400">Lender</span>
+            </div>
+
+
             }
         >
             <Head title="Dashboard" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            You're logged in!
-                        </div>
+                    <div className="overflow-hidden bg-black shadow-sm sm:rounded-lg">
+
+                        <LenderApp/>
                     </div>
                 </div>
             </div>

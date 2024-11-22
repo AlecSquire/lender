@@ -17,7 +17,12 @@ class ItemFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'description' => fake()->text(50),
+            'is_returned' => fake()->boolean(),
+            // 'borrower_id' => fake()->numberBetween(1, 50),
+            // 'user_id' => fake()->numberBetween(1, 50),
+            'expiry_date' => fake()->date(),
         ];
     }
 }

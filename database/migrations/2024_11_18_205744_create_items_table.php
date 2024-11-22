@@ -19,8 +19,12 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->boolean('is_returned');
-            $table->foreignId('borrower_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('borrower_id');
+            $table->foreign('borrower_id')->references('id')->on('borrowers')->onDelete('cascade');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->date('expiry_date')->nullable();
         });
     }

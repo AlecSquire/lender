@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Borrower extends Model
+class Lender extends Model
 {
-    /** @use HasFactory<\Database\Factories\BorrowerFactory> */
+    /** @use HasFactory<\Database\Factories\LenderFactory> */
     use HasFactory;
 
     /**
@@ -18,7 +18,6 @@ class Borrower extends Model
     protected $fillable = [
         'name',
         'email',
-
     ];
 
     /**

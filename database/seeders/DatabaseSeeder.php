@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
         // Create lenders
         $lenders = Lender::factory(50)->create();
 
-
         // Create items and associate them with users and borrowers
         Item::factory(50)->create([
             'user_id' => $users->random()->id, // Randomly associate with a user

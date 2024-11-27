@@ -30,6 +30,13 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                  <NavLink
+                                    href={route('form')}
+                                    active={route().current('form')}
+                                >
+                                    Form
+                                </NavLink>
+
                             </div>
                         </div>
 
@@ -134,6 +141,12 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                    href={route('form')}
+                                    active={route().current('form')}
+                                >
+                                    Form
+                                </ResponsiveNavLink>
                     </div>
 
                     <div className="border-t border-gray-800 pb-1 pt-4">

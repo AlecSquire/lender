@@ -1,6 +1,7 @@
-import LenderApp from '@/Components/LenderApp';
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+
 
 export default function Dashboard() {
     return (
@@ -15,13 +16,13 @@ export default function Dashboard() {
 
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Form" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-black shadow-sm sm:rounded-lg">
 
-                        <LenderApp/>
+                      <h1>This is your dashboard</h1>
                     </div>
                 </div>
             </div>

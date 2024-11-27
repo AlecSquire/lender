@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\Response;
 
 class ProfileController extends Controller
 {
@@ -40,6 +40,10 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
+    public function getUsers(): Response
+    {
+        dd('hi im loo');
+    }
     /**
      * Delete the user's account.
      */

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->text('description');
-            $table->boolean('is_returned');
-            $table->unsignedBigInteger('borrower_id');
-            $table->foreign('borrower_id')->references('id')->on('borrowers')->onDelete('cascade');
+            $table->unsignedBigInteger('borrower_id')->nullable();
+            $table->foreign('borrower_id')->references('id')->on('borrowers')->onDelete('cascade')->nullable();
+            $table->boolean('is_returned')->default(true);
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

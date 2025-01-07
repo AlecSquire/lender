@@ -40,10 +40,7 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    public function getUsers(): Response
-    {
-        dd('hi im loo');
-    }
+
     /**
      * Delete the user's account.
      */

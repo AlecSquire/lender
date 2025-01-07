@@ -1,13 +1,15 @@
 <?php
 
+use App\Http\Controllers\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/getUsers', function () {
-    $users = (new ProfileController)->getUsers();
-    return response()->json($users);
-})->middleware(['auth', 'verified']);
+
+Route::resource('items', ItemController::class);
+Route::resource('users', UserController::class);

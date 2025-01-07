@@ -79,7 +79,7 @@ export default function LenderLandingPage({ laravelVersion, phpVersion }) {
       <div className="relative z-10 flex h-full flex-col items-start justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-xl">
           <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Lending Made<br />Simple,
+            Lending. <br />Made Simple,
           </h1>
           <p className="mb-8 text-xl font-light leading-relaxed">
        We track it so you can forget about it.

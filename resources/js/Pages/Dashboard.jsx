@@ -3,8 +3,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
 
+
 export default function Dashboard() {
     return (
+
         <AuthenticatedLayout
             header={
 
@@ -23,9 +25,12 @@ export default function Dashboard() {
                     <div className="overflow-hidden bg-black shadow-sm sm:rounded-lg">
 
                       <h1>This is your dashboard</h1>
+
+
                     </div>
                 </div>
             </div>
         </AuthenticatedLayout>
+
     );
 }

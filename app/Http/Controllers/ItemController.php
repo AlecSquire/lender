@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Item;
+use Illuminate\Http\JsonResponse;
 
 class ItemController extends Controller
 {
@@ -10,11 +12,12 @@ class ItemController extends Controller
      * Display a listing of the resource.
      */
     // List all items
-    public function index()
+    public function index(): JsonResponse
     {
         $items = Item::all();
         return response()->json($items);
     }
+
     /**
      * Show the form for creating a new resource.
      */

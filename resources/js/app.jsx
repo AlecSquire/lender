@@ -4,6 +4,17 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot } from "react-dom/client";
+import { ThemeProvider } from "@/components/theme-provider";
+
+function App() {
+    return (
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            {children}
+        </ThemeProvider>
+    );
+}
+
+export default App;
 
 const appName = "Lender";
 

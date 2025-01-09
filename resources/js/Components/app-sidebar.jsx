@@ -1,175 +1,166 @@
-import * as React from "react"
+import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+    AudioWaveform,
+    BookOpen,
+    Bot,
+    Bell,
+    Command,
+    Frame,
+    GalleryVerticalEnd,
+    Map,
+    PieChart,
+    Settings2,
+    SquareTerminal,
+    User, // Added new icon
+    CreditCard, // Added new icon for the cash lending feature
+    MessageCircle, // Added new icon for contact features (e.g., mobile, WhatsApp)
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
+import { ModeToggle } from "./mode-toggle";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar"
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarRail,
+} from "@/components/ui/sidebar";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+    user: {
+        name: "Shadcn",
+        email: "m@example.com",
+        avatar: "/avatars/shadcn.jpg", // This could link to the user's profile image
     },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
+    borrowedItems: [
         {
-          title: "History",
-          url: "#",
+            item: "Lawnmower",
+            borrowedFrom: "John Doe",
+            contact: "john@example.com",
+            dueDate: "2025-01-15",
+            notificationsSent: 3,
+            status: "Overdue",
+            contactMethods: ["Email", "Mobile", "WhatsApp"], // Future feature could add more contact options
         },
         {
-          title: "Starred",
-          url: "#",
+            item: "Camera",
+            borrowedFrom: "Jane Smith",
+            contact: "jane@example.com",
+            dueDate: "2025-02-01",
+            notificationsSent: 1,
+            status: "On Time",
+            contactMethods: ["Email"],
+        },
+    ],
+    teams: [
+        {
+            name: "Acme Inc",
+            logo: GalleryVerticalEnd,
+            plan: "Enterprise",
         },
         {
-          title: "Settings",
-          url: "#",
+            name: "Acme Corp.",
+            logo: AudioWaveform,
+            plan: "Startup",
         },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
+    ],
+    navMain: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
+            title: "Borrowed Items",
+            url: "#",
+            icon: SquareTerminal,
+            isActive: true,
+            items: [
+                {
+                    title: "History",
+                    url: "#",
+                },
+                {
+                    title: "Starred",
+                    url: "#",
+                },
+                {
+                    title: "Settings",
+                    url: "#",
+                },
+            ],
         },
         {
-          title: "Get Started",
-          url: "#",
+            title: "Notifications",
+            url: "#",
+            icon: Bell,
+            items: [
+                {
+                    title: "Pending",
+                    url: "#",
+                },
+                {
+                    title: "Overdue",
+                    url: "#",
+                },
+            ],
         },
         {
-          title: "Tutorials",
-          url: "#",
+            title: "Settings",
+            url: "#",
+            icon: Settings2,
+            items: [
+                {
+                    title: "General",
+                    url: "#",
+                },
+                {
+                    title: "Team",
+                    url: "#",
+                },
+            ],
+        },
+    ],
+    stretchGoals: [
+        {
+            goal: "Public Shaming",
+            description: "Show overdue items publicly on the app.",
+            isActive: true,
         },
         {
-          title: "Changelog",
-          url: "#",
+            goal: "Cash Lending",
+            description: "Allow lending with interest calculation.",
+            isActive: true,
         },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
+    ],
+    projects: [
         {
-          title: "General",
-          url: "#",
+            name: "Lender Backend",
+            url: "#",
+            icon: Bell,
         },
         {
-          title: "Team",
-          url: "#",
+            name: "App Design",
+            url: "#",
+            icon: Bell,
         },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+    ],
+};
 
-export function AppSidebar({
-  ...props
-}) {
-  return (
-    (<Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>)
-  );
+export function AppSidebar({ ...props }) {
+    return (
+        <Sidebar collapsible="icon" {...props}>
+            <SidebarHeader>
+                <TeamSwitcher teams={data.teams} />
+            </SidebarHeader>
+            <ModeToggle />
+            <SidebarContent>
+                <NavMain items={data.navMain} />
+                <NavProjects projects={data.projects} />
+            </SidebarContent>
+            <SidebarFooter>
+                <NavUser user={data.user} />
+            </SidebarFooter>
+            <SidebarRail />
+        </Sidebar>
+    );
 }

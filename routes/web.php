@@ -28,10 +28,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/getUsers', function () {
-    $users = (new ProfileController)->getUsers();
-    return response()->json($users);
-})->middleware(['auth', 'verified']);
 
 
 require __DIR__ . '/auth.php';

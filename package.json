@@ -35,6 +35,8 @@
         "@radix-ui/react-separator": "^1.1.1",
         "@radix-ui/react-slot": "^1.1.1",
         "@radix-ui/react-tooltip": "^1.1.6",
+        "@react-three/drei": "^9.120.8",
+        "@react-three/fiber": "^8.17.12",
         "@tanstack/react-table": "^8.20.6",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -42,6 +44,17 @@
         "lucide-react": "^0.460.0",
         "react-hook-form": "^7.53.2",
         "tailwind-merge": "^2.6.0",
-        "tailwindcss-animate": "^1.0.7"
-    }
+        "tailwindcss-animate": "^1.0.7",
+        "three": "^0.172.0"
+    },
+    "name": "lender",
+    "version": "1.0.0",
+    "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\" alt=\"Laravel Logo\"></a></p>",
+    "main": "postcss.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

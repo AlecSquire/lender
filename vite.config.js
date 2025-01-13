@@ -3,12 +3,12 @@ import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+    assetsInclude: ['**/*.glb'],
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.jsx'], // Change to .tsx
+            input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
         }),
         react(),
     ],
-
 });

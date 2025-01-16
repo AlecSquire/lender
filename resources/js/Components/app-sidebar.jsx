@@ -70,22 +70,18 @@ const data = {
     ],
     navMain: [
         {
-            title: "Borrowed Items",
+            title: "Items",
             url: "#",
             icon: SquareTerminal,
             isActive: true,
             items: [
                 {
-                    title: "History",
-                    url: "#",
+                    title: "All items",
+                    url: "/items",
                 },
                 {
                     title: "Starred",
-                    url: "#",
-                },
-                {
-                    title: "Settings",
-                    url: "#",
+                    url: "/items/starred",
                 },
             ],
         },
@@ -149,9 +145,7 @@ const data = {
 export function AppSidebar({ ...props }) {
     return (
         <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
-            </SidebarHeader>
+            <SidebarHeader>Lender</SidebarHeader>
             <ModeToggle />
             <SidebarContent>
                 <NavMain items={data.navMain} />

@@ -58,7 +58,27 @@ export default function Dashboard({ payments }) {
                                 </div>
                             </Card>
                             <div className="aspect-video rounded-xl bg-muted/50">
-                                <Scene3D modelUrl="/Chick.glb" />
+                                {/* <Scene3D modelUrl="/Chick.glb" /> */}
+                                <Card>
+                                    <div className="aspect-video rounded-xl bg-muted/50">
+                                        <CardHeader>
+                                            <CardTitle>
+                                                Lend an item now
+                                            </CardTitle>
+                                            <CardDescription>
+                                                Ironing Board
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p>Alan Squire</p>
+                                        </CardContent>
+                                        <CardFooter>
+                                            <Button>
+                                                Send an notifaction?{" "}
+                                            </Button>
+                                        </CardFooter>
+                                    </div>
+                                </Card>
                             </div>
                             <div className="aspect-video rounded-xl bg-muted/50">
                                 <TextSpeaker />

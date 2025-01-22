@@ -1,10 +1,8 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/components/ui/button";
 import TextSpeaker from "@/components/TextSpeaker";
 import { AppSidebar } from "@/components/app-sidebar";
-import Scene3D from "@/components/Scene3D";
-
 import {
     Card,
     CardContent,
@@ -20,7 +18,7 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import ItemsTable from "@/Pages/Items/Index";
+import MasterTable from "@/Pages/MasterTable/Index";
 
 export default function Dashboard({ payments }) {
     // Add payments prop
@@ -80,12 +78,10 @@ export default function Dashboard({ payments }) {
                                     </div>
                                 </Card>
                             </div>
-                            <div className="aspect-video rounded-xl bg-muted/50">
-                                <TextSpeaker />
-                            </div>
+                            <div className="aspect-video rounded-xl bg-muted/50"></div>
                         </div>
                         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-                            <ItemsTable payments={payments} />
+                            <MasterTable payments={payments} />
                         </div>
                     </div>
                 </SidebarInset>

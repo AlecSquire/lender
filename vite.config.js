@@ -6,7 +6,7 @@ export default defineConfig({
     assetsInclude: ['**/*.glb'],
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.jsx'],
+            input: ['resources/css/app.css', 'resources/js/app.jsx', 'resources/js/app.tsx'],
             refresh: true,
         }),
         react(),

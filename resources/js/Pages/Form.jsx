@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import React from "react";
 import { Head } from "@inertiajs/react";
-import Footer from "@/Components/Footer";
+import Footer from "@/components/Footer";
 import { useForm } from "react-hook-form";
 
 export default function Form() {

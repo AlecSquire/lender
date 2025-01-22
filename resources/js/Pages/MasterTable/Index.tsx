@@ -5,7 +5,7 @@ interface Props {
     payments?: Payment[]; // Make payments optional
 }
 
-export default function Items({ payments = [] }: Props) {
+export default function MasterTable({ payments = [] }: Props) {
     // Provide default empty array
     return (
         <div className="container mx-auto py-10">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-
+import Pagination from "@/Components/pagination";
 import {
     Card,
     CardContent,
@@ -19,34 +19,33 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCheck } from "lucide-react";
 import { X } from "lucide-react";
 
-// export interface allItems {
-//     name: string;
-//     borrower_id: number;
-//     id: number;
-//     created_at: number;
-//     description: string;
-//     expiry_date?: Date;
-//     user_id: number;
-//     is_returned: boolean;
-// }
-
 export default function Items() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState([]); // Stores the item data
+    const [pagination, setPagination] = useState(null); // Stores pagination metadata
+    const [returned, setReturned] = useState(items.is_returned);
+    console.log(returned);
 
-    const fetchItems = async () => {
-        const response = await fetch("/api/items");
-        const allItems = await response.json();
-        return allItems;
+    // const toggler = (id) => {
+    //     setReturned((prev) => !prev);
+    // };
+
+    // add toggler prev state function to take an id and toggle that items returned value
+    // send path or put request to update the be with the new state
+    // implement back end
+
+    const fetchItems = async (pageUrl = "/api/items") => {
+        try {
+            const response = await fetch(pageUrl);
+            const allItems = await response.json();
+            setItems(allItems.data); // Update the items
+            setPagination(allItems); // Store pagination metadata
+        } catch (error) {
+            console.error("Error occurred when fetching items:", error);
+        }
     };
+
     useEffect(() => {
-        fetchItems()
-            .then((items) => {
-                setItems(items);
-                console.log(items);
-            })
-            .catch(() => {
-                console.log("Error occured when fetching items blud");
-            });
+        fetchItems(); // Fetch initial items
     }, []);
 
     return (
@@ -57,6 +56,7 @@ export default function Items() {
                     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                         <div className="flex items-center gap-2 px-4">
                             <SidebarTrigger className="-ml-1" />
+                            <h1>All items</h1>
                             <Separator
                                 orientation="vertical"
                                 className="mr-2 h-4"
@@ -71,8 +71,7 @@ export default function Items() {
                                     <div className="w-100 rounded-sm bg-muted/50">
                                         <CardHeader>
                                             <CardTitle>
-                                                {" "}
-                                                <p>Item Name:{item.name}</p>
+                                                <p>Item Name: {item.name}</p>
                                             </CardTitle>
                                             <CardDescription>
                                                 <p>
@@ -83,19 +82,24 @@ export default function Items() {
                                         </CardHeader>
                                         <CardContent>
                                             Item is Returned{" "}
-                                            {item.is_returned ? (
-                                                <CheckCheck
-                                                    color="red"
-                                                    size={24}
-                                                />
-                                            ) : (
-                                                <X color="red" size={24} />
-                                            )}
-                                            {/* Is returned? {item.is_returned} */}
+                                            <Button
+                                                onClick={() =>
+                                                    setReturned(!returned)
+                                                }
+                                            >
+                                                {returned ? (
+                                                    <CheckCheck
+                                                        color="red"
+                                                        size={24}
+                                                    />
+                                                ) : (
+                                                    <X color="red" size={24} />
+                                                )}
+                                            </Button>
                                         </CardContent>
                                         <CardFooter>
                                             <Button>
-                                                Send an notifaction?{" "}
+                                                Send a notification?
                                             </Button>
                                         </CardFooter>
                                     </div>
@@ -103,6 +107,13 @@ export default function Items() {
                             </div>
                         ))}
                     </div>
+
+                    {pagination && (
+                        <Pagination
+                            pagination={pagination}
+                            onPageChange={(url) => fetchItems(url)} // Fetch items for the selected page
+                        />
+                    )}
                 </SidebarInset>
             </SidebarProvider>
         </>

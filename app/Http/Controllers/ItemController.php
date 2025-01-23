@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Item;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+
+use Illuminate\Pagination\LengthAwarePaginator;
+// use Illuminate\Pagination\Paginator;
 
 class ItemController extends Controller
 {
@@ -14,7 +18,7 @@ class ItemController extends Controller
     // List all items
     public function index(): JsonResponse
     {
-        $items = Item::all();
+        $items = DB::table('items')->paginate(15);
         return response()->json($items);
     }
 

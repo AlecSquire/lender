@@ -1,7 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
-import TextSpeaker from "@/components/TextSpeaker";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
     Card,
@@ -11,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
 import { Separator } from "@/components/ui/separator";
 import {
     SidebarInset,
@@ -19,71 +17,77 @@ import {
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import MasterTable from "@/Pages/MasterTable/Index";
+import DashboardLendForm from "./DashboardLendForm";
+import { Bell, Calendar, Users } from "lucide-react";
 
 export default function Dashboard({ payments }) {
-    // Add payments prop
     return (
         <AuthenticatedLayout>
-            <Head title="Lender" />
+            <Head title="Lender Dashboard" />
             <SidebarProvider>
                 <AppSidebar />
-                <SidebarInset>
-                    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                        <div className="flex items-center gap-2 px-4">
-                            <SidebarTrigger className="-ml-1" />
-                            <Separator
-                                orientation="vertical"
-                                className="mr-2 h-4"
-                            />
-                        </div>
+                <SidebarInset className="bg-background">
+                    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                        <SidebarTrigger className="-ml-2" />
+                        <h1 className="text-xl font-semibold">Dashboard</h1>
+                        <Separator
+                            orientation="vertical"
+                            className="mx-2 h-6"
+                        />
                     </header>
-                    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                            <Card>
-                                <div className="aspect-video rounded-xl bg-muted/50">
-                                    <CardHeader>
-                                        <CardTitle>3 Days remaining</CardTitle>
-                                        <CardDescription>
-                                            Ironing Board
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>Alan Squire</p>
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Button>Send an notifaction? </Button>
-                                    </CardFooter>
-                                </div>
+                    <main className="container mx-auto p-4">
+                        <div className="grid gap-4 md:grid-cols-3">
+                            <Card className="md:col-span-1 flex flex-col">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center">
+                                        <Calendar className="mr-2 h-4 w-4" />3
+                                        Days remaining
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Ironing Board
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex-grow">
+                                    <p className="font-medium">Alan Squire</p>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button className="w-full">
+                                        <Bell className="mr-2 h-4 w-4" />
+                                        Send a notification
+                                    </Button>
+                                </CardFooter>
                             </Card>
-                            <div className="aspect-video rounded-xl bg-muted/50">
-                                {/* <Scene3D modelUrl="/Chick.glb" /> */}
-                                <Card>
-                                    <div className="aspect-video rounded-xl bg-muted/50">
-                                        <CardHeader>
-                                            <CardTitle>
-                                                Lend an item now
-                                            </CardTitle>
-                                            <CardDescription>
-                                                Ironing Board
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p>Alan Squire</p>
-                                        </CardContent>
-                                        <CardFooter>
-                                            <Button>
-                                                Send an notifaction?{" "}
-                                            </Button>
-                                        </CardFooter>
-                                    </div>
-                                </Card>
-                            </div>
-                            <div className="aspect-video rounded-xl bg-muted/50"></div>
+
+                            <Card className="md:col-span-1">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center">
+                                        <Users className="mr-2 h-4 w-4" />
+                                        Quick Lend
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <DashboardLendForm />
+                                </CardContent>
+                            </Card>
+                            <Card className="md:col-span-1">
+                                <CardHeader>
+                                    <CardTitle>Statistics</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {/* Add your statistics or charts here */}
+                                    <p>Coming soon...</p>
+                                </CardContent>
+                            </Card>
                         </div>
-                        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-                            <MasterTable payments={payments} />
-                        </div>
-                    </div>
+                        <Card className="mt-4">
+                            <CardHeader>
+                                <CardTitle>Recent Transactions</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <MasterTable payments={payments} />
+                            </CardContent>
+                        </Card>
+                    </main>
                 </SidebarInset>
             </SidebarProvider>
         </AuthenticatedLayout>

@@ -32,8 +32,8 @@ import {
 // This is sample data.
 const data = {
     user: {
-        name: "Shadcn",
-        email: "m@example.com",
+        name: "Alec",
+        email: "als@lender.com",
         avatar: "/avatars/shadcn.jpg", // This could link to the user's profile image
     },
     borrowedItems: [
@@ -86,20 +86,53 @@ const data = {
             ],
         },
         {
-            title: "Notifications",
+            title: "Lenders",
             url: "#",
             icon: Bell,
             items: [
                 {
-                    title: "Pending",
-                    url: "#",
+                    title: "lenders",
+                    url: "/lender",
                 },
                 {
-                    title: "Overdue",
-                    url: "#",
+                    title: "create lender",
+                    url: "/lender/create",
                 },
             ],
         },
+        {
+            title: "Borrowers",
+            url: "#",
+            icon: SquareTerminal,
+            isActive: true,
+            items: [
+                {
+                    title: "Borrowers",
+                    url: "/borrower",
+                },
+                {
+                    title: "Add",
+                    url: "/borrower/create",
+                },
+            ],
+        },
+        {
+            title: "Users",
+            url: "#",
+            icon: SquareTerminal,
+            isActive: true,
+            items: [
+                {
+                    title: "Users",
+                    url: "/users",
+                },
+                {
+                    title: "Add",
+                    url: "/users/create",
+                },
+            ],
+        },
+
         {
             title: "Settings",
             url: "#",
@@ -145,7 +178,9 @@ const data = {
 export function AppSidebar({ ...props }) {
     return (
         <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>Lender</SidebarHeader>
+            <SidebarHeader>
+                <a href="/dashboard">Lender</a>
+            </SidebarHeader>
             <ModeToggle />
             <SidebarContent>
                 <NavMain items={data.navMain} />

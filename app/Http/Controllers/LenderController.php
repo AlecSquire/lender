@@ -3,26 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Lender;
 use Illuminate\Http\JsonResponse;
 
-class BorrowerController extends Controller
+class LenderController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      */
     // List all items
     public function index(): JsonResponse
     {
-        $borrowers = DB::table('borrowers')->paginate(15);
-        return response()->json($borrowers);
+        $lenders = Lender::all();
+        return response()->json($lenders);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {}
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.

@@ -12,6 +12,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Route::post('/transaction', function (Request $request) {
+//     return dd($request);
+// })->middleware('auth:sanctum');
 
 Route::resource('items', ItemController::class);
 

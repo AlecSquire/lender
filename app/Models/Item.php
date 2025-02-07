@@ -16,13 +16,15 @@ class Item extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'contact_name',
+        'contact_email',
+        'transaction_type',
+        'item_name',
         'description',
         'is_returned',
         'borrower_id',
         'user_id',
-        'expiry_date',
+        'return_date',
     ];
 
     /**

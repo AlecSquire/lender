@@ -12,10 +12,10 @@ export default function DashboardLendForm() {
     } = useForm({
         defaultValues: {
             transaction_type: "lending",
-            item: "",
-            name: "",
-            date: "",
-            email: "",
+            item_name: "",
+            return_date: "",
+            contact_name: "",
+            contact_email: "",
         },
     });
 
@@ -24,11 +24,12 @@ export default function DashboardLendForm() {
     const onSubmit = async (data) => {
         setIsLoading(true);
         try {
-            const response = await fetch("/transaction", {
+            const response = await fetch("/api/items", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
+            console.log(data);
             if (!response.ok) throw new Error("Failed to submit");
 
             alert("Form submitted successfully!");
@@ -81,24 +82,26 @@ export default function DashboardLendForm() {
                 {/* Item Input */}
                 <h2 className="text-lg font-semibold mb-2">A</h2>
                 <input
-                    {...register("item", { required: "Item is required" })}
+                    {...register("item_name", { required: "Item is required" })}
                     placeholder="Item Name"
                     className="w-full px-2 py-1 text-xs border rounded"
                 />
-                {errors.item && (
+                {errors.item_name && (
                     <p className="text-red-500 text-xs">
-                        {errors.item.message}
+                        {errors.item_name.message}
                     </p>
                 )}
 
                 {/* User Name */}
                 <h2 className="text-lg font-semibold mb-2">From</h2>
                 <input
-                    {...register("name", { required: "Name is required" })}
+                    {...register("contact_name", {
+                        required: "Name is required",
+                    })}
                     placeholder="User"
                     className="w-full px-2 py-1 text-xs border rounded"
                 />
-                {errors.name && (
+                {errors.contact_name && (
                     <p className="text-red-500 text-xs">
                         {errors.name.message}
                     </p>
@@ -107,12 +110,14 @@ export default function DashboardLendForm() {
                 {/* Date Input */}
                 <h2 className="text-lg font-semibold mb-2">Until</h2>
                 <input
-                    {...register("date", { required: "Date is required" })}
+                    {...register("return_date", {
+                        required: "Date is required",
+                    })}
                     type="date"
                     placeholder="How long?"
                     className="w-full px-2 py-1 text-xs border rounded"
                 />
-                {errors.date && (
+                {errors.return_date && (
                     <p className="text-red-500 text-xs">
                         {errors.date.message}
                     </p>
@@ -121,7 +126,7 @@ export default function DashboardLendForm() {
                 {/* Email Input */}
                 <h2 className="text-lg font-semibold mb-2">Contact at</h2>
                 <input
-                    {...register("email", {
+                    {...register("contact_email", {
                         required: "Email is required",
                         pattern: {
                             value: /^\S+@\S+$/i,
@@ -132,7 +137,7 @@ export default function DashboardLendForm() {
                     placeholder="Email"
                     className="w-full px-2 py-1 text-xs border rounded"
                 />
-                {errors.email && (
+                {errors.contact_email && (
                     <p className="text-red-500 text-xs">
                         {errors.email.message}
                     </p>

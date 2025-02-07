@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
 
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -16,7 +17,9 @@ Route::get('/user', function (Request $request) {
 //     return dd($request);
 // })->middleware('auth:sanctum');
 
-Route::resource('items', ItemController::class);
+Route::resource('items', ItemController::class)
+    ->only(['index', 'store']);
+// ->middleware(['auth', 'verified']);
 
 Route::resource('users', UserController::class);
 Route::resource('borrowers', BorrowerController::class);

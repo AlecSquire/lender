@@ -12,18 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
+
             $table->id();
             $table->timestamps();
-            $table->string('name');
-            $table->text('description');
-            $table->unsignedBigInteger('borrower_id')->nullable();
-            $table->foreign('borrower_id')->references('id')->on('borrowers')->onDelete('cascade')->nullable();
-            $table->boolean('is_returned')->default(true);
+            $table->string('contact_name');
+            $table->string('item_name');
+            $table->string('transaction_type');
+            $table->date('return_date');
+            $table->string('contact_email');
+            $table->text('item_description')->nullable();
 
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->date('expiry_date')->nullable();
+            // $table->unsignedBigInteger('borrower_id')->nullable();
+
+            // $table->foreign('borrower_id')->references('id')->on('borrowers')->nullable();
+            // $table->boolean('is_returned')->nullable();
+
+            // $table->unsignedBigInteger('user_id')->nullable();
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

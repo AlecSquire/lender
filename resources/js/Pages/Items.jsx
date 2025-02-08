@@ -22,7 +22,7 @@ export default function Items() {
     const [items, setItems] = useState([]);
     const [pagination, setPagination] = useState(null);
 
-    const fetchItems = async (pageUrl = "/api/items") => {
+    const fetchItems = async (pageUrl = "/items") => {
         try {
             const response = await fetch(pageUrl);
             const allItems = await response.json();

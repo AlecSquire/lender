@@ -20,10 +20,10 @@ class ItemController extends Controller
      * Display a listing of the resource.
      */
     // List all items
-    public function index(): JsonResponse
+    public function index(): Response
     {
         $items = DB::table('items')->paginate(15);
-        return response()->json($items);
+        return response($items);
     }
 
     /**

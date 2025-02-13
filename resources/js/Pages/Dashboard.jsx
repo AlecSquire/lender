@@ -39,10 +39,34 @@ export default function Dashboard({ payments }) {
             console.error("Error occurred when fetching items:", error);
         }
     };
-
+    console.log(items);
     useEffect(() => {
         fetchItems();
     }, []); // Added fetchItems to the dependency array
+
+    const notify = async (item) => {
+        try {
+            const response = await fetch("/api/notify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Specifies JSON request body
+                    Accept: "application/json", // Requests JSON response
+                },
+
+                body: JSON.stringify({
+                    ...item,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to send notification");
+            }
+
+            const result = await response.json();
+            console.log("Notification sent:", result);
+        } catch (error) {
+            console.error("Error occurred when sending notification:", error);
+        }
+    };
 
     const toggleReturned = async (id) => {
         const updatedItems = items.map((item) =>
@@ -103,7 +127,12 @@ export default function Dashboard({ payments }) {
                                                           )} days overdue`}
                                                 </p>
                                                 <CardFooter>
-                                                    <Button className="w-full">
+                                                    <Button
+                                                        className="w-full"
+                                                        onClick={() =>
+                                                            notify({ ...item })
+                                                        }
+                                                    >
                                                         <Bell className="mr-2 h-4 w-4" />
                                                         Notify?
                                                     </Button>

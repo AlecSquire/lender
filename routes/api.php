@@ -21,7 +21,7 @@ Route::get('/user', function (Request $request) {
 
 Route::resource('items', ItemController::class)
     ->only(['index', 'store']);
-// ->middleware(['auth', 'verified']);
+// ->middleware(['auth', ]);
 Route::resource('users', UserController::class);
 Route::resource('borrowers', BorrowerController::class);
 Route::resource('lenders', LenderController::class);

@@ -23,6 +23,7 @@ import { Bell, Calendar, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CheckCheck, X } from "lucide-react";
 import { differenceInDays, parseISO } from "date-fns";
+import { ModeToggle } from "@/Components/mode-toggle";
 
 export default function Dashboard({ payments }) {
     const [items, setItems] = useState([]);
@@ -79,26 +80,30 @@ export default function Dashboard({ payments }) {
         <AuthenticatedLayout>
             <Head title="Lender Dashboard" />
             <SidebarProvider>
-                <AppSidebar />
+                {/* <AppSidebar /> */}
                 <SidebarInset className="bg-background">
                     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                        <SidebarTrigger className="-ml-2" />
+                        {/* <SidebarTrigger className="-ml-2" /> */}
                         <h1 className="text-xl font-semibold">Dashboard</h1>
                         <Separator
                             orientation="vertical"
                             className="mx-2 h-6"
                         />
+                        <header>
+                            <a href="/dashboard">Lender</a>
+                        </header>
+                        <ModeToggle />
                     </header>
                     <main className="container mx-auto p-4">
-                        <div className="grid gap-4 md:grid-cols-3">
-                            <Card className="md:col-span-1 flex flex-col h-full">
+                        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                            {/* Due Soon (Left) */}
+                            <Card className="flex flex-col h-full">
                                 <CardHeader>
                                     <CardTitle className="flex items-center">
                                         <Calendar className="mr-2 h-4 w-4" />
                                         Due Soon
                                     </CardTitle>
                                 </CardHeader>
-
                                 <CardContent className="overflow-y-auto max-h-[400px]">
                                     {items.map((item) => {
                                         const daysRemaining = differenceInDays(
@@ -113,7 +118,6 @@ export default function Dashboard({ payments }) {
                                                 <CardDescription>
                                                     Item Name: {item.item_name}
                                                 </CardDescription>
-                                                <CardDescription></CardDescription>
                                                 <p className="font-medium">
                                                     {item.contact_name}
                                                 </p>
@@ -143,7 +147,8 @@ export default function Dashboard({ payments }) {
                                 </CardContent>
                             </Card>
 
-                            <Card className="md:col-span-1">
+                            {/* Quick Lend (Right) */}
+                            <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center">
                                         <Users className="mr-2 h-4 w-4" />
@@ -154,18 +159,9 @@ export default function Dashboard({ payments }) {
                                     <DashboardLendForm />
                                 </CardContent>
                             </Card>
-                            {/* <Card className="md:col-span-1">
-                                <CardHeader>
-                                    <CardTitle>Statistics</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p>Coming soon...</p>
-                                </CardContent>
-                            </Card> */}
-                            <Card className="mt-4">
-                                <CardHeader>
-                                    <CardTitle>Recent Transactions</CardTitle>
-                                </CardHeader>
+
+                            {/* Full-width MasterTable (Bottom) */}
+                            <Card className="md:col-span-2">
                                 <CardContent>
                                     <MasterTable payments={payments} />
                                 </CardContent>

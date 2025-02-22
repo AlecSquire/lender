@@ -22,7 +22,7 @@ class ItemController extends Controller
     // List all items
     public function index(): Response
     {
-        $items = DB::table('items')->paginate(15);
+        $items = DB::table('items')->paginate(30);
         return response($items);
     }
 

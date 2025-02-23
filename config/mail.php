@@ -16,6 +16,7 @@ return [
 
     'default' => env('MAIL_MAILER', 'log'),
 
+
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations
@@ -36,6 +37,15 @@ return [
     */
 
     'mailers' => [
+        'mailersend' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailersend.net'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+        ],
 
         'smtp' => [
             'transport' => 'smtp',
@@ -59,6 +69,12 @@ return [
             // 'client' => [
             //     'timeout' => 5,
             // ],
+        ],
+
+        'mailgun' => [
+            'domain' => env('MAILGUN_DOMAIN'),
+            'secret' => env('MAILGUN_SECRET'),
+            'endpoint' => env('MAILGUN_ENDPOINT', 'api.eu.mailgun.net'),
         ],
 
         'resend' => [
@@ -109,8 +125,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'alec@lender.com'),
+        'name' => env('MAIL_FROM_NAME', 'Lender Bot'),
     ],
 
 ];

@@ -11,8 +11,8 @@ class Transaction extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function transaction(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'foreign_key', 'other_key');
-    }
+    // public function transaction(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class, 'foreign_key', 'other_key');
+    // }
 }

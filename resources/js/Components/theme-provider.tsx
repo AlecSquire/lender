@@ -1,6 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light" | "system";
+type Theme =
+    | "dark"
+    | "light"
+    | "system"
+    | "blue"
+    | "green"
+    | "red"
+    | "purple"
+    | "orange"
+    | "pink";
 
 type ThemeProviderProps = {
     children: React.ReactNode;
@@ -32,8 +41,19 @@ export function ThemeProvider({
 
     useEffect(() => {
         const root = window.document.documentElement;
+        const allThemes = [
+            "light",
+            "dark",
+            "blue",
+            "green",
+            "red",
+            "purple",
+            "orange",
+            "pink",
+        ];
 
-        root.classList.remove("light", "dark");
+        // Remove all previous theme classes
+        root.classList.remove(...allThemes);
 
         if (theme === "system") {
             const systemTheme = window.matchMedia(
@@ -41,12 +61,10 @@ export function ThemeProvider({
             ).matches
                 ? "dark"
                 : "light";
-
             root.classList.add(systemTheme);
-            return;
+        } else {
+            root.classList.add(theme);
         }
-
-        root.classList.add(theme);
     }, [theme]);
 
     const value = {
@@ -66,9 +84,8 @@ export function ThemeProvider({
 
 export const useTheme = () => {
     const context = useContext(ThemeProviderContext);
-
-    if (context === undefined)
+    if (context === undefined) {
         throw new Error("useTheme must be used within a ThemeProvider");
-
+    }
     return context;
 };

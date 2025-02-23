@@ -17,7 +17,7 @@ class TransactionController extends Controller
      */
     public function store(CreateTransaction Request $request): Response
     {
-
+        // check
     }
 
     /**
@@ -33,7 +33,11 @@ class TransactionController extends Controller
      */
     public function update(Request $request, TransactionController $transactionController)
     {
-        //
+        //validate
+        //authorize
+        //update
+        //and persist
+        //redirect to somewhere
     }
 
     /**

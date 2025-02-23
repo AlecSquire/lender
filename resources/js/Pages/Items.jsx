@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
     Card,
     CardContent,
@@ -8,45 +9,33 @@ import {
     CardTitle,
     CardFooter,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { differenceInDays, parseISO } from "date-fns";
-
-import { CheckCheck, X, Bell } from "lucide-react";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+import { ArrowUpRight, ArrowDownLeft, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Items() {
     const [items, setItems] = useState([]);
 
-    const fetchItems = async (pageUrl = "/api/items") => {
+    const fetchItems = useCallback(async (pageUrl = "/api/items") => {
         try {
             const response = await fetch(pageUrl);
             const allItems = await response.json();
-            console.log(allItems.data);
             setItems(allItems.data);
         } catch (error) {
             console.error("Error occurred when fetching items:", error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchItems();
-    }, []);
+    }, [fetchItems]);
 
     const toggleReturned = async (id) => {
         const updatedItems = items.map((item) =>
             item.id === id ? { ...item, is_returned: !item.is_returned } : item
         );
         setItems(updatedItems);
-
-        // TODO: Implement API call to update the backend
-        // try {
-        //   await fetch(`/api/items/${id}`, {
-        //     method: 'PUT',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ is_returned: !items.find(item => item.id === id).is_returned })
-        //   });
-        // } catch (error) {
-        //   console.error("Error updating item:", error);
-        // }
     };
 
     const notify = async (item) => {
@@ -54,8 +43,8 @@ export default function Items() {
             const response = await fetch("/api/notify", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json", // Specifies JSON request body
-                    Accept: "application/json", // Requests JSON response
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({
                     ...item,
@@ -73,93 +62,89 @@ export default function Items() {
     };
 
     return (
-        <div>
-            <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                <h1 className="text-xl font-semibold">All Items</h1>
-                <Separator orientation="vertical" className="mx-2 h-6" />
-            </header>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {items.map((item) => {
+                const daysRemaining = item.return_date
+                    ? differenceInDays(parseISO(item.return_date), new Date())
+                    : null;
 
-            <main className="container mx-auto p-4">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((item) => {
-                        const daysRemaining = item.return_date
-                            ? differenceInDays(
-                                  parseISO(item.return_date),
-                                  new Date()
-                              )
-                            : null;
+                const isLending = item.transaction_type !== "borrowing";
 
-                        return (
-                            <Card key={item.id} className="flex flex-col">
-                                <CardHeader>
-                                    <CardTitle>{item.item_name}</CardTitle>
-                                    <CardTitle className={"font-thin"}>
-                                        {item.contact_name}
-                                    </CardTitle>
-                                    <CardDescription>
-                                        {item?.item_description}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex-grow">
-                                    <p className="mb-2">
-                                        Status:{" "}
-                                        <span
-                                            className={
-                                                item.is_returned
-                                                    ? "text-green-600 font-medium"
-                                                    : "text-red-600 font-medium"
-                                            }
-                                        >
-                                            {item.is_returned
-                                                ? "Returned"
-                                                : "Not Returned"}
-                                        </span>
-                                    </p>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => toggleReturned(item.id)}
-                                        className="w-full"
-                                    >
-                                        {item.is_returned ? (
-                                            <>
-                                                <X className="mr-2 h-4 w-4" />
-                                                <p className="text-sm text-gray-600">
-                                                    Returned
-                                                </p>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <CheckCheck className="mr-2 h-4 w-4" />
-                                                <p className="text-sm text-gray-600">
-                                                    {daysRemaining > 0
-                                                        ? `${daysRemaining} days to return`
-                                                        : daysRemaining === 0
-                                                        ? "Due today"
-                                                        : `${Math.abs(
-                                                              daysRemaining
-                                                          )} days overdue`}
-                                                </p>
-                                            </>
-                                        )}
-                                    </Button>
-                                </CardContent>
-                                <CardFooter>
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        className="w-full"
-                                        onClick={() => notify(item)}
-                                    >
-                                        <Bell className="mr-2 h-4 w-4" />
-                                        Send Notification
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        );
-                    })}
-                </div>
-            </main>
+                return (
+                    <Card
+                        key={item.id}
+                        className={cn(
+                            "flex flex-col transition-colors",
+                            isLending
+                                ? "border-orange-200 hover:border-orange-300"
+                                : "border-blue-200 hover:border-blue-300"
+                        )}
+                    >
+                        <CardHeader>
+                            <div className="flex justify-between items-center mb-2">
+                                <Badge
+                                    variant={
+                                        isLending ? "destructive" : "default"
+                                    }
+                                    className="gap-1"
+                                >
+                                    {isLending ? (
+                                        <>
+                                            <ArrowUpRight className="h-3 w-3" />
+                                            Lending
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ArrowDownLeft className="h-3 w-3" />
+                                            Borrowing
+                                        </>
+                                    )}
+                                </Badge>
+                                <span
+                                    className={cn(
+                                        "text-sm font-medium",
+                                        item.is_returned
+                                            ? "text-green-600"
+                                            : daysRemaining && daysRemaining < 0
+                                            ? "text-red-600"
+                                            : "text-yellow-600"
+                                    )}
+                                >
+                                    {item.is_returned
+                                        ? "Returned"
+                                        : daysRemaining > 0
+                                        ? `${daysRemaining} days remaining`
+                                        : daysRemaining === 0
+                                        ? "Due today"
+                                        : `${Math.abs(
+                                              daysRemaining
+                                          )} days overdue`}
+                                </span>
+                            </div>
+                            <CardTitle>{item.item_name}</CardTitle>
+                            <CardTitle className="font-normal text-base text-muted-foreground">
+                                {item.contact_name}
+                            </CardTitle>
+                            <CardDescription>
+                                {item?.item_description}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                asChild
+                            >
+                                <a href={`/items/${item.id}`}>
+                                    View Case
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                </a>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                );
+            })}
         </div>
     );
 }

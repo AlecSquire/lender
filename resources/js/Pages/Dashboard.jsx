@@ -31,50 +31,63 @@ export default function Dashboard({ payments }) {
         <AuthenticatedLayout>
             <Head title="Lender Dashboard" />
             <SidebarProvider>
-                {/* <AppSidebar /> */}
-                <SidebarInset className="bg-background">
-                    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                        {/* <SidebarTrigger className="-ml-2" /> */}
+                <SidebarInset className="bg-background min-h-screen">
+                    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center border-b bg-background px-6">
                         <h1 className="text-xl font-semibold">Dashboard</h1>
                         <Separator
                             orientation="vertical"
-                            className="mx-2 h-6"
+                            className="mx-4 h-6"
                         />
-                        <header>
-                            <a href="/dashboard">Lender</a>
-                        </header>
-                        <ModeToggle />
+                        <a
+                            href="/dashboard"
+                            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            Lender
+                        </a>
+                        <div className="ml-auto">
+                            <ModeToggle />
+                        </div>
                     </header>
-                    <main className="container mx-auto p-4">
-                        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                            {/* Due Soon (Left) */}
-                            <Card className="flex flex-col h-full">
-                                <Items />
-                            </Card>
 
-                            {/* Quick Lend (Right) */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <Users className="mr-2 h-4 w-4" />
-                                        Quick Lend
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <DashboardLendForm />
+                    <div className="container mx-auto p-6 space-y-6">
+                        {/* Top Section with Items and Form */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Items List */}
+                            <Card className="lg:h-[800px] flex flex-col">
+                                <CardContent className="flex-1 overflow-auto p-0">
+                                    <Items />
                                 </CardContent>
                             </Card>
 
-                            {/* Full-width MasterTable (Bottom) */}
-                            <Card className="md:col-span-2">
-                                <CardContent>
-                                    <MasterTable payments={payments} />
-                                </CardContent>
+                            {/* Quick Lend Form */}
+                            <Card className="lg:h-[800px] flex flex-col">
+                                <DashboardLendForm />
                             </Card>
                         </div>
-                    </main>
+
+                        {/* Bottom Section with Table */}
+                        <Card>
+                            <CardHeader className="border-b bg-muted/50">
+                                <CardTitle>Transaction History</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <MasterTable payments={payments} />
+                            </CardContent>
+                        </Card>
+                    </div>
                 </SidebarInset>
             </SidebarProvider>
         </AuthenticatedLayout>
     );
+}
+
+{
+    /* Full-width MasterTable (Bottom) */
+}
+{
+    /* <Card className="md:col-span-2">
+                                <CardContent>
+                                    <MasterTable payments={payments} />
+                                </CardContent>
+                            </Card> */
 }

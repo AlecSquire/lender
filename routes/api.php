@@ -19,8 +19,7 @@ Route::get('/user', function (Request $request) {
 //     return dd($request);
 // })->middleware('auth:sanctum');
 
-Route::resource('items', ItemController::class)
-    ->only(['index', 'store']);
+Route::resource('items', ItemController::class);
 // ->middleware(['auth', ]);
 Route::resource('users', UserController::class);
 Route::resource('borrowers', BorrowerController::class);

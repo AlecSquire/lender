@@ -64,16 +64,16 @@ export default function Dashboard({ payments }) {
                                 <DashboardLendForm />
                             </Card>
                         </div>
-
+                        {/*
                         {/* Bottom Section with Table */}
-                        <Card>
+                        {/* <Card>
                             <CardHeader className="border-b bg-muted/50">
                                 <CardTitle>Transaction History</CardTitle>
                             </CardHeader>
                             <CardContent className="p-0">
                                 <MasterTable payments={payments} />
                             </CardContent>
-                        </Card>
+                        </Card> */}
                     </div>
                 </SidebarInset>
             </SidebarProvider>

@@ -136,7 +136,7 @@ export default function Items() {
                                 className="w-full"
                                 asChild
                             >
-                                <a href={`/items/${item.id}`}>
+                                <a href={`/item/${item.id}`}>
                                     View Case
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </a>

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,8 +28,84 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
-export default function Show({ item }) {
-    const { route } = usePage().props;
+export default function Item() {
+    const [item, setItem] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const url = usePage().url;
+    const id = url.split("/").pop();
+
+    useEffect(() => {
+        const fetchItem = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/items/${id}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch item");
+                }
+                const data = await response.json();
+                setItem(data.data);
+                setError(null);
+            } catch (error) {
+                setError("Error fetching item data. Please try again.");
+                console.error("Error fetching item:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchItem();
+    }, [id]);
+
+    const notify = async (itemData) => {
+        try {
+            const response = await fetch("/api/notify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(itemData),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to send notification");
+            }
+
+            const result = await response.json();
+            console.log("Notification sent:", result);
+        } catch (error) {
+            console.error("Error sending notification:", error);
+            // Here you might want to show a user-friendly error message
+        }
+    };
+
+    if (loading) {
+        return <div className="container mx-auto p-6">Loading...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="container mx-auto p-6">
+                <Card>
+                    <CardContent className="pt-6">
+                        <div className="text-red-500">{error}</div>
+                        <Button
+                            variant="outline"
+                            onClick={() => window.location.reload()}
+                            className="mt-4"
+                        >
+                            Try Again
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    if (!item) {
+        return <div className="container mx-auto p-6">Item not found</div>;
+    }
 
     return (
         <>
@@ -97,70 +174,59 @@ export default function Show({ item }) {
                                         Notes
                                     </TabsTrigger>
                                 </TabsList>
+
                                 <TabsContent
                                     value="details"
                                     className="space-y-4"
                                 >
                                     <div className="grid gap-4 py-4">
-                                        <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label className="text-right">
-                                                <User className="h-4 w-4 ml-auto" />
-                                            </Label>
-                                            <div className="col-span-3">
-                                                <p className="font-medium">
-                                                    {item.contact_name}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Contact Name
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label className="text-right">
-                                                <Mail className="h-4 w-4 ml-auto" />
-                                            </Label>
-                                            <div className="col-span-3">
-                                                <p className="font-medium">
-                                                    {item.contact_email}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Contact Email
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label className="text-right">
-                                                <Package className="h-4 w-4 ml-auto" />
-                                            </Label>
-                                            <div className="col-span-3">
-                                                <p className="font-medium">
-                                                    {item.item_name}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Item Name
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-4 items-center gap-4">
-                                            <Label className="text-right">
-                                                <Calendar className="h-4 w-4 ml-auto" />
-                                            </Label>
-                                            <div className="col-span-3">
-                                                <p className="font-medium">
-                                                    {format(
-                                                        new Date(
-                                                            item.return_date
-                                                        ),
-                                                        "PPP"
-                                                    )}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Return Date
-                                                </p>
-                                            </div>
-                                        </div>
+                                        {[
+                                            {
+                                                icon: User,
+                                                label: "Contact Name",
+                                                value: item.contact_name,
+                                            },
+                                            {
+                                                icon: Mail,
+                                                label: "Contact Email",
+                                                value: item.contact_email,
+                                            },
+                                            {
+                                                icon: Package,
+                                                label: "Item Name",
+                                                value: item.item_name,
+                                            },
+                                            {
+                                                icon: Calendar,
+                                                label: "Return Date",
+                                                value: format(
+                                                    new Date(item.return_date),
+                                                    "PPP"
+                                                ),
+                                            },
+                                        ].map(
+                                            ({ icon: Icon, label, value }) => (
+                                                <div
+                                                    key={label}
+                                                    className="grid grid-cols-4 items-center gap-4"
+                                                >
+                                                    <Label className="text-right">
+                                                        <Icon className="h-4 w-4 ml-auto" />
+                                                    </Label>
+                                                    <div className="col-span-3">
+                                                        <p className="font-medium">
+                                                            {value}
+                                                        </p>
+                                                        <p className="text-sm text-muted-foreground">
+                                                            {label}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )
+                                        )}
                                     </div>
                                 </TabsContent>
+
                                 <TabsContent value="history">
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 text-sm">
@@ -177,9 +243,9 @@ export default function Show({ item }) {
                                                 )}
                                             </span>
                                         </div>
-                                        {/* History items would be mapped here */}
                                     </div>
                                 </TabsContent>
+
                                 <TabsContent value="notes">
                                     <Textarea
                                         placeholder="Add notes about this item..."
@@ -225,7 +291,7 @@ export default function Show({ item }) {
                                             Mark as:
                                         </Label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <Link
+                                            {/* <Link
                                                 href={route(
                                                     "items.mark-returned",
                                                     item.id
@@ -233,17 +299,17 @@ export default function Show({ item }) {
                                                 method="patch"
                                                 as="button"
                                                 preserveScroll
+                                            > */}
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full"
                                             >
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="w-full"
-                                                >
-                                                    <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
-                                                    Returned
-                                                </Button>
-                                            </Link>
-                                            <Link
+                                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
+                                                Returned
+                                            </Button>
+                                            {/* </Link> */}
+                                            {/* <Link
                                                 href={route(
                                                     "items.mark-active",
                                                     item.id
@@ -251,16 +317,16 @@ export default function Show({ item }) {
                                                 method="patch"
                                                 as="button"
                                                 preserveScroll
+                                            > */}
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full"
                                             >
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="w-full"
-                                                >
-                                                    <XCircle className="mr-2 h-4 w-4 text-yellow-600" />
-                                                    Active
-                                                </Button>
-                                            </Link>
+                                                <XCircle className="mr-2 h-4 w-4 text-yellow-600" />
+                                                Active
+                                            </Button>
+                                            {/* </Link> */}
                                         </div>
                                     </div>
                                 </div>
@@ -272,19 +338,16 @@ export default function Show({ item }) {
                                 <CardTitle>Quick Actions</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                                <Link
+                                {/* <Link
                                     href={route("items.send-reminder", item.id)}
                                     method="post"
                                     as="button"
                                     preserveScroll
                                 >
-                                    <Button
-                                        className="w-full"
-                                        variant="secondary"
-                                    >
+                                    <Button className="w-full" variant="secondary">
                                         Send Reminder
                                     </Button>
-                                </Link>
+                                </Link> */}
                                 <Link
                                     href={route("items.destroy", item.id)}
                                     method="delete"

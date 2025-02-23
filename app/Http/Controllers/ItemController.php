@@ -75,7 +75,11 @@ class ItemController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $item = Item::findOrFail($id);
+        return response()->json([
+            'data' => $item,
+            'status' => 'success'
+        ]);
     }
 
     /**
@@ -83,15 +87,38 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
-        //
-    }
 
+        return ('    public function edit(string $id) to edit this baby');
+    }
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'contact_name' => 'required|string|max:225',
+                'transaction_type' => 'required|in:lending,borrowing',
+                'item_name' => 'required|string|max:225',
+                'return_date' => 'required|date',
+                'contact_email' => 'required|email',
+                'item_description' => 'nullable|string|max:500',
+            ]);
+
+            $item = Item::where('id', $id);
+
+            $item->update($validated);
+
+            return response()->json([
+                'data' => $item,
+                'status' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching items',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -99,6 +126,6 @@ class ItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return ('    public function destroy(string $id) to destroy this baby');
     }
 }

@@ -43,4 +43,9 @@ class Item extends Model
     {
         return [];
     }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

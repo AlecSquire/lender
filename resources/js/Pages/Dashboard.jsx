@@ -24,58 +24,9 @@ import { useEffect, useState } from "react";
 import { CheckCheck, X } from "lucide-react";
 import { differenceInDays, parseISO } from "date-fns";
 import { ModeToggle } from "@/Components/mode-toggle";
+import Items from "./Items";
 
 export default function Dashboard({ payments }) {
-    const [items, setItems] = useState([]);
-    const [pagination, setPagination] = useState(null);
-
-    const fetchItems = async (pageUrl = "/api/items") => {
-        try {
-            const response = await fetch(pageUrl);
-            const allItems = await response.json();
-            console.log(items);
-            setItems(allItems.data);
-            setPagination(allItems);
-        } catch (error) {
-            console.error("Error occurred when fetching items:", error);
-        }
-    };
-    console.log(items);
-    useEffect(() => {
-        fetchItems();
-    }, []); // Added fetchItems to the dependency array
-
-    const notify = async (item) => {
-        try {
-            const response = await fetch("/api/notify", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json", // Specifies JSON request body
-                    Accept: "application/json", // Requests JSON response
-                },
-
-                body: JSON.stringify({
-                    ...item,
-                }),
-            });
-            if (!response.ok) {
-                throw new Error("Failed to send notification");
-            }
-
-            const result = await response.json();
-            console.log("Notification sent:", result);
-        } catch (error) {
-            console.error("Error occurred when sending notification:", error);
-        }
-    };
-
-    const toggleReturned = async (id) => {
-        const updatedItems = items.map((item) =>
-            item.id === id ? { ...item, is_returned: !item.is_returned } : item
-        );
-        setItems(updatedItems);
-    };
-
     return (
         <AuthenticatedLayout>
             <Head title="Lender Dashboard" />
@@ -98,53 +49,7 @@ export default function Dashboard({ payments }) {
                         <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                             {/* Due Soon (Left) */}
                             <Card className="flex flex-col h-full">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center">
-                                        <Calendar className="mr-2 h-4 w-4" />
-                                        Due Soon
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="overflow-y-auto max-h-[400px]">
-                                    {items.map((item) => {
-                                        const daysRemaining = differenceInDays(
-                                            parseISO(item.return_date),
-                                            new Date()
-                                        );
-                                        return (
-                                            <div
-                                                key={item.id}
-                                                className="border-b pb-2 mb-2"
-                                            >
-                                                <CardDescription>
-                                                    Item Name: {item.item_name}
-                                                </CardDescription>
-                                                <p className="font-medium">
-                                                    {item.contact_name}
-                                                </p>
-                                                <p className="text-sm text-gray-600">
-                                                    {daysRemaining > 0
-                                                        ? `${daysRemaining} days to return`
-                                                        : daysRemaining === 0
-                                                        ? "Due today"
-                                                        : `${Math.abs(
-                                                              daysRemaining
-                                                          )} days overdue`}
-                                                </p>
-                                                <CardFooter>
-                                                    <Button
-                                                        className="w-full"
-                                                        onClick={() =>
-                                                            notify({ ...item })
-                                                        }
-                                                    >
-                                                        <Bell className="mr-2 h-4 w-4" />
-                                                        Notify?
-                                                    </Button>
-                                                </CardFooter>
-                                            </div>
-                                        );
-                                    })}
-                                </CardContent>
+                                <Items />
                             </Card>
 
                             {/* Quick Lend (Right) */}

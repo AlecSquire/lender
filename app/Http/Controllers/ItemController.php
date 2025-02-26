@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemResource;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-
+use Inertia\Inertia;
 
 // use Illuminate\Pagination\Paginator;
 
@@ -75,7 +76,8 @@ class ItemController extends Controller
      */
     public function show(string $id)
     {
-        $item = Item::findOrFail($id);
+
+        $item = new ItemResource(Item::findOrFail($id));
         return response()->json([
             'data' => $item,
             'status' => 'success'
@@ -87,8 +89,15 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
-
-        return ('    public function edit(string $id) to edit this baby');
+        try {
+            $item = Item::findOrFail($id);
+            return Inertia::render('EditItem', [
+                'item' => new ItemResource($item)
+            ]);
+        } catch (\Exception $e) {
+            // Handle exception if needed
+            return redirect()->route('dashboard')->with('error', 'Item not found');
+        }
     }
     /**
      * Update the specified resource in storage.

@@ -7,7 +7,6 @@ use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Models\Item;
 
 
 
@@ -19,11 +18,11 @@ Route::get('/user', function (Request $request) {
 //     return dd($request);
 // })->middleware('auth:sanctum');
 
-Route::resource('items', ItemController::class);
+Route::apiResource('items', ItemController::class);
 // ->middleware(['auth', ]);
-Route::resource('users', UserController::class);
-Route::resource('borrowers', BorrowerController::class);
-Route::resource('lenders', LenderController::class);
+Route::apiResource('users', UserController::class);
+Route::apiResource('borrowers', BorrowerController::class);
+Route::apiResource('lenders', LenderController::class);
 Route::post('/notify', [NotificationController::class, 'store']);
 
 //created via the resource route

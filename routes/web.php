@@ -21,10 +21,25 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+// Route::resource('item', ItemController::class);
+
+// routes/web.php
+// Route::middleware(['auth', 'verified'])->group(function () {
 // Item Page (React Fetches Data)
 Route::get('/item/{id}', function ($id) {
     return Inertia::render('Item', ['id' => $id]);
 })->middleware(['auth', 'verified'])->name('item');
+
+// Route to load the item details page
+Route::get('/item/{id}/delete', function ($id) {
+    return Inertia::render('DeleteItem', ['id' => $id]);
+})->name('item.delete');
+
+// Route for the edit page
+Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
+// Other frontend routes...
+// });
 
 // Lending & Borrowing Pages
 Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth', 'verified'])->name('lend');

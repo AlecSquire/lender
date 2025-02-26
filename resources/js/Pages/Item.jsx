@@ -153,10 +153,22 @@ export default function Item() {
                                         {item.item_description}
                                     </CardDescription>
                                 </div>
-                                <Link href={route("items.edit", item.id)}>
+                                {/* <Link href={route("item.edit", item.id)}>
                                     <Button variant="outline" size="sm">
                                         <Pencil className="h-4 w-4 mr-2" />
                                         Edit Details
+                                    </Button>
+                                </Link> */}
+                                <Link
+                                    href={route("items.destroy", item.id)}
+                                    method="delete"
+                                    as="button"
+                                >
+                                    <Button
+                                        className="w-full"
+                                        variant="destructive"
+                                    >
+                                        Delete Case
                                     </Button>
                                 </Link>
                             </div>
@@ -167,9 +179,9 @@ export default function Item() {
                                     <TabsTrigger value="details">
                                         Details
                                     </TabsTrigger>
-                                    <TabsTrigger value="history">
+                                    {/* <TabsTrigger value="edit">
                                         History
-                                    </TabsTrigger>
+                                    </TabsTrigger> */}
                                     <TabsTrigger value="notes">
                                         Notes
                                     </TabsTrigger>
@@ -338,16 +350,19 @@ export default function Item() {
                                 <CardTitle>Quick Actions</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                                {/* <Link
-                                    href={route("items.send-reminder", item.id)}
+                                <Link
+                                    href={"/"}
                                     method="post"
                                     as="button"
                                     preserveScroll
                                 >
-                                    <Button className="w-full" variant="secondary">
+                                    <Button
+                                        className="w-full"
+                                        variant="secondary"
+                                    >
                                         Send Reminder
                                     </Button>
-                                </Link> */}
+                                </Link>
                                 <Link
                                     href={route("items.destroy", item.id)}
                                     method="delete"

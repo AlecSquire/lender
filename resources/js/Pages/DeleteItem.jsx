@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 
-export default function Delete({ item }) {
+export default function DeleteItem({ item }) {
     const { delete: destroy, processing } = useForm();
 
     const handleDelete = () => {
@@ -23,8 +23,9 @@ export default function Delete({ item }) {
 
     return (
         <>
-            <Head title={`Delete - ${item.item_name}`} />
-
+            {/* <Head title={`Delete - ${item.item_name}`} /> */}
+            <h1>hi</h1>
+            {/*
             <div className="container mx-auto p-6 max-w-xl">
                 <div className="flex items-center mb-6">
                     <Button variant="ghost" size="sm" asChild className="mr-4">
@@ -97,7 +98,7 @@ export default function Delete({ item }) {
                         </Button>
                     </CardFooter>
                 </Card>
-            </div>
+            </div> */}
         </>
     );
 }

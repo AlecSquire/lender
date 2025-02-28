@@ -1,101 +1,103 @@
-// import { useState, useEffect } from "react";
-// import { Head, Link, useForm, usePage } from "@inertiajs/react";
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-// import { Textarea } from "@/components/ui/textarea";
-// import { ArrowLeft, Save, Loader2 } from "lucide-react";
-// import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState, useEffect } from "react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// export default function EditItem() {
-//     const [item, setItem] = useState(null);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState(null);
-//     const url = usePage().url;
-//     const id = url.split("/").pop();
+export default function EditItem() {
+    const [item, setItem] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const url = usePage().url;
+    const id = url.split("/").pop();
 
-//     const { data, setData, patch, processing, errors } = useForm({
-//         transaction_type: "",
-//         item_name: "",
-//         item_description: "",
-//         contact_name: "",
-//         contact_email: "",
-//         return_date: "",
-//         notes: "",
-//     });
+    const { data, setData, patch, processing, errors } = useForm({
+        transaction_type: "",
+        item_name: "",
+        item_description: "",
+        contact_name: "",
+        contact_email: "",
+        return_date: "",
+        notes: "",
+    });
 
-//     useEffect(() => {
-//         const fetchItem = async () => {
-//             try {
-//                 setLoading(true);
-//                 const response = await fetch(`/api/item/${id}`);
-//                 if (!response.ok) {
-//                     throw new Error("Failed to fetch item");
-//                 }
-//                 const itemData = await response.json();
+    useEffect(() => {
+        const fetchItem = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/item/${id}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch item");
+                }
+                const itemData = await response.json();
 
-//                 setItem(itemData);
-//                 // Update form data with fetched item data
-//                 setData({
-//                     transaction_type: itemData.transaction_type,
-//                     item_name: itemData.item_name,
-//                     item_description: itemData.item_description || "",
-//                     contact_name: itemData.contact_name,
-//                     contact_email: itemData.contact_email,
-//                     return_date: itemData.return_date,
-//                     notes: itemData.notes || "",
-//                 });
-//                 setError(null);
-//             } catch (error) {
-//                 setError("Error fetching item data. Please try again.");
-//                 console.error("Error fetching item:", error);
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
+                setItem(itemData);
+                // Update form data with fetched item data
+                setData({
+                    transaction_type: itemData.transaction_type,
+                    item_name: itemData.item_name,
+                    item_description: itemData.item_description || "",
+                    contact_name: itemData.contact_name,
+                    contact_email: itemData.contact_email,
+                    return_date: itemData.return_date,
+                    notes: itemData.notes || "",
+                });
+                setError(null);
+            } catch (error) {
+                setError("Error fetching item data. Please try again.");
+                console.error("Error fetching item:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-//         if (id) {
-//             fetchItem();
-//         }
-//     }, [id, setData]);
+        if (id) {
+            fetchItem();
+        }
+    }, [id, setData]);
 
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-//         patch(route("items.update", id));
-//     };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        patch(route("items.update", id));
+    };
 
-//     if (loading) {
-//         return (
-//             <div className="container mx-auto p-6 max-w-2xl flex items-center justify-center min-h-[400px]">
-//                 <div className="flex items-center gap-2">
-//                     <Loader2 className="h-5 w-5 animate-spin" />
-//                     <p>Loading item...</p>
-//                 </div>
-//             </div>
-//         );
-//     }
+    if (loading) {
+        return (
+            <div className="container mx-auto p-6 max-w-2xl flex items-center justify-center min-h-[400px]">
+                <div className="flex items-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <p>Loading item...</p>
+                </div>
+            </div>
+        );
+    }
 
-//     if (error) {
-//         return (
-//             <div className="container mx-auto p-6 max-w-2xl">
-//                 <Alert variant="destructive">
-//                     <AlertDescription>{error}</AlertDescription>
-//                 </Alert>
-//             </div>
-//         );
-//     }
+    if (error) {
+        return (
+            <div className="container mx-auto p-6 max-w-2xl">
+                <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
 
-//     if (!item) {
-//         return (
-//             <div className="container mx-auto p-6 max-w-2xl">
-//                 <Alert variant="destructive">
-//                     <AlertDescription>Item not found.</AlertDescription>
-//                 </Alert>
-//             </div>
-//         );
-//     }
+    if (!item) {
+        return (
+            <div className="container mx-auto p-6 max-w-2xl">
+                <Alert variant="destructive">
+                    <AlertDescription>Item not found.</AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
+    return <h1>Hi</h1>;
+}
 
 //     return (
 //         <>

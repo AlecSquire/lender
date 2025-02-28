@@ -153,24 +153,21 @@ export default function Item() {
                                         {item.item_description}
                                     </CardDescription>
                                 </div>
-                                {/* <Link href={route("item.edit", item.id)}>
+                                <Link href={route("item.edit", item.id)}>
                                     <Button variant="outline" size="sm">
                                         <Pencil className="h-4 w-4 mr-2" />
                                         Edit Details
                                     </Button>
-                                </Link> */}
-                                <Link
-                                    href={route("items.destroy", item.id)}
+                                </Link>
+                                {/* <Link
+                                    href={route("item.delete", item.id)}
                                     method="delete"
                                     as="button"
                                 >
-                                    <Button
-                                        className="w-full"
-                                        variant="destructive"
-                                    >
+                                    <Button variant="destructive">
                                         Delete Case
                                     </Button>
-                                </Link>
+                                </Link> */}
                             </div>
                         </CardHeader>
                         <CardContent>
@@ -364,6 +361,15 @@ export default function Item() {
                                     </Button>
                                 </Link>
                                 <Link
+                                    href={route("item.delete", item.id)}
+                                    method="delete"
+                                    as="button"
+                                >
+                                    <Button variant="destructive">
+                                        Delete Case
+                                    </Button>
+                                </Link>
+                                {/* <Link
                                     href={route("items.destroy", item.id)}
                                     method="delete"
                                     as="button"
@@ -374,7 +380,7 @@ export default function Item() {
                                     >
                                         Delete Case
                                     </Button>
-                                </Link>
+                                </Link> */}
                             </CardContent>
                         </Card>
                     </div>

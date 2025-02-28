@@ -25,21 +25,20 @@ Route::get('/dashboard', function () {
 // Route::resource('item', ItemController::class);
 
 // routes/web.php
-// Route::middleware(['auth', 'verified'])->group(function () {
-// Item Page (React Fetches Data)
-Route::get('/item/{id}', function ($id) {
-    return Inertia::render('Item', ['id' => $id]);
-})->middleware(['auth', 'verified'])->name('item');
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Item Page (React Fetches Data)
+    Route::get('/item/{id}', function ($id) {
+        return Inertia::render('Item', ['id' => $id]);
+    })->middleware(['auth', 'verified'])->name('item');
 
-// Route to load the item details page
-Route::get('/item/{id}/delete', function ($id) {
-    return Inertia::render('DeleteItem', ['id' => $id]);
-})->name('item.delete');
+    // Route to load the item details page
+    Route::delete('/item/{id}', function ($id) {
+        return Inertia::render('DeleteItem', ['id' => $id]);
+    })->name('item.delete');
 
-// Route for the edit page
-Route::get('/item/{id}/edit', [ItemController::class, 'edit'])->name('item.edit');
-// Other frontend routes...
-// });
+    // Route for the edit page
+    Route::patch('/item/{id}', [ItemController::class, 'edit'])->name('item.edit');
+});
 
 // Lending & Borrowing Pages
 Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth', 'verified'])->name('lend');

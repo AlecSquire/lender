@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Mail\ItemDue;
+use App\Models\Item;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -21,6 +24,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/test', [NotificationController::class, 'sendTestEmail']);
 
 // Route::resource('item', ItemController::class);
 

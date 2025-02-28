@@ -32,9 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->middleware(['auth', 'verified'])->name('item');
 
     // Route to load the item details page
-    Route::delete('/item/{id}', function ($id) {
-        return Inertia::render('DeleteItem', ['id' => $id]);
-    })->name('item.delete');
+    Route::delete('/item/{id}', [ItemController::class, 'delete'])->name('item.delete');
 
     // Route for the edit page
     Route::patch('/item/{id}', [ItemController::class, 'edit'])->name('item.edit');

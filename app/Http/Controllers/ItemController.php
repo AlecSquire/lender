@@ -8,6 +8,7 @@ use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 // use Illuminate\Pagination\Paginator;
@@ -87,18 +88,7 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        try {
-            $item = Item::findOrFail($id);
-            return Inertia::render('EditItem', [
-                'item' => new ItemResource($item)
-            ]);
-        } catch (\Exception $e) {
-            // Handle exception if needed
-            return redirect()->route('dashboard')->with('error', 'Item not found');
-        }
-    }
+    public function edit(string $id) {}
     /**
      * Update the specified resource in storage.
      */
@@ -133,8 +123,21 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        return ('    public function destroy(string $id) to destroy this baby');
+        try {
+            $item = Item::findOrFail($id);
+            $item->delete();
+
+            return response()->json([
+                'message' => 'Item deleted successfully',
+                'status' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting item',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

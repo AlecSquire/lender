@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +16,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
     ArrowUpRight,
     ArrowDownLeft,
     Calendar,
@@ -24,14 +35,19 @@ import {
     XCircle,
     Pencil,
     ArrowLeft,
+    Save,
+    AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-
+import { router } from "@inertiajs/react";
 export default function Item() {
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [notes, setNotes] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const url = usePage().url;
     const id = url.split("/").pop();
 
@@ -45,6 +61,7 @@ export default function Item() {
                 }
                 const data = await response.json();
                 setItem(data.data);
+                setNotes(data.data.notes || "");
                 setError(null);
             } catch (error) {
                 setError("Error fetching item data. Please try again.");
@@ -57,29 +74,50 @@ export default function Item() {
         fetchItem();
     }, [id]);
 
-    const notify = async (itemData) => {
+    const handleNotesUpdate = async () => {
+        setIsSaving(true);
         try {
-            const response = await fetch("/api/notify", {
-                method: "POST",
+            const response = await fetch(`/api/items/${id}`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    Accept: "application/json",
                 },
-                body: JSON.stringify(itemData),
+                body: JSON.stringify({ notes }),
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to send notification");
-            }
+            if (!response.ok) throw new Error("Failed to update notes");
 
-            const result = await response.json();
-            console.log("Notification sent:", result);
+            // Optional: Show success message
         } catch (error) {
-            console.error("Error sending notification:", error);
-            // Here you might want to show a user-friendly error message
+            console.error("Error updating notes:", error);
+            // Optional: Show error message
+        } finally {
+            setIsSaving(false);
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            const response = await fetch(`/api/items/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN":
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute("content") || "",
+                },
+            });
+
+            if (!response.ok) throw new Error("Failed to delete item");
+
+            // Use Inertia for navigation instead of window.location
+            router.visit(route("dashboard"));
+        } catch (error) {
+            console.error("Error deleting item:", error);
+            // Optional: Show error message to user
+        }
+    };
     if (loading) {
         return <div className="container mx-auto p-6">Loading...</div>;
     }
@@ -153,19 +191,10 @@ export default function Item() {
                                         {item.item_description}
                                     </CardDescription>
                                 </div>
-                                <Link href={route("item.edit", item.id)}>
+                                {/* <Link href={route("item.edit", item.id)}>
                                     <Button variant="outline" size="sm">
                                         <Pencil className="h-4 w-4 mr-2" />
                                         Edit Details
-                                    </Button>
-                                </Link>
-                                {/* <Link
-                                    href={route("item.delete", item.id)}
-                                    method="delete"
-                                    as="button"
-                                >
-                                    <Button variant="destructive">
-                                        Delete Case
                                     </Button>
                                 </Link> */}
                             </div>
@@ -176,9 +205,6 @@ export default function Item() {
                                     <TabsTrigger value="details">
                                         Details
                                     </TabsTrigger>
-                                    {/* <TabsTrigger value="edit">
-                                        History
-                                    </TabsTrigger> */}
                                     <TabsTrigger value="notes">
                                         Notes
                                     </TabsTrigger>
@@ -236,31 +262,31 @@ export default function Item() {
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="history">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <Badge
-                                                variant="outline"
-                                                className="rounded-full"
-                                            >
-                                                Created
-                                            </Badge>
-                                            <span className="text-muted-foreground">
-                                                {format(
-                                                    new Date(item.created_at),
-                                                    "PPP"
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </TabsContent>
-
                                 <TabsContent value="notes">
-                                    <Textarea
-                                        placeholder="Add notes about this item..."
-                                        className="min-h-[200px]"
-                                        defaultValue={item.notes}
-                                    />
+                                    <div className="space-y-4">
+                                        <Textarea
+                                            placeholder="Add notes about this item..."
+                                            className="min-h-[200px]"
+                                            value={notes}
+                                            onChange={(e) =>
+                                                setNotes(e.target.value)
+                                            }
+                                        />
+                                        <Button
+                                            onClick={handleNotesUpdate}
+                                            disabled={isSaving}
+                                            className="w-full"
+                                        >
+                                            {isSaving ? (
+                                                "Saving..."
+                                            ) : (
+                                                <>
+                                                    <Save className="mr-2 h-4 w-4" />
+                                                    Save Notes
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
                                 </TabsContent>
                             </Tabs>
                         </CardContent>
@@ -300,15 +326,6 @@ export default function Item() {
                                             Mark as:
                                         </Label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            {/* <Link
-                                                href={route(
-                                                    "items.mark-returned",
-                                                    item.id
-                                                )}
-                                                method="patch"
-                                                as="button"
-                                                preserveScroll
-                                            > */}
                                             <Button
                                                 variant="outline"
                                                 size="sm"
@@ -317,16 +334,6 @@ export default function Item() {
                                                 <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
                                                 Returned
                                             </Button>
-                                            {/* </Link> */}
-                                            {/* <Link
-                                                href={route(
-                                                    "items.mark-active",
-                                                    item.id
-                                                )}
-                                                method="patch"
-                                                as="button"
-                                                preserveScroll
-                                            > */}
                                             <Button
                                                 variant="outline"
                                                 size="sm"
@@ -335,7 +342,6 @@ export default function Item() {
                                                 <XCircle className="mr-2 h-4 w-4 text-yellow-600" />
                                                 Active
                                             </Button>
-                                            {/* </Link> */}
                                         </div>
                                     </div>
                                 </div>
@@ -347,40 +353,78 @@ export default function Item() {
                                 <CardTitle>Quick Actions</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                                <Link
-                                    href={"/"}
-                                    method="post"
-                                    as="button"
-                                    preserveScroll
+                                <Button className="w-full" variant="secondary">
+                                    Send Reminder
+                                </Button>
+
+                                <Dialog
+                                    open={isDeleteOpen}
+                                    onOpenChange={setIsDeleteOpen}
                                 >
-                                    <Button
-                                        className="w-full"
-                                        variant="secondary"
-                                    >
-                                        Send Reminder
-                                    </Button>
-                                </Link>
-                                <Link
-                                    href={route("item.delete", item.id)}
-                                    method="delete"
-                                    as="button"
-                                >
-                                    <Button variant="destructive">
-                                        Delete Case
-                                    </Button>
-                                </Link>
-                                {/* <Link
-                                    href={route("items.destroy", item.id)}
-                                    method="delete"
-                                    as="button"
-                                >
-                                    <Button
-                                        className="w-full"
-                                        variant="destructive"
-                                    >
-                                        Delete Case
-                                    </Button>
-                                </Link> */}
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            className="w-full"
+                                            variant="destructive"
+                                        >
+                                            Delete Case
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <div className="flex items-center gap-4">
+                                                <div className="p-3 rounded-full bg-destructive/10">
+                                                    <AlertTriangle className="h-6 w-6 text-destructive" />
+                                                </div>
+                                                <div>
+                                                    <DialogTitle>
+                                                        Delete Item
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Are you sure you want to
+                                                        delete this item? This
+                                                        action cannot be undone.
+                                                    </DialogDescription>
+                                                </div>
+                                            </div>
+                                        </DialogHeader>
+                                        <div className="rounded-lg border border-muted p-4 mt-4">
+                                            <div className="space-y-3">
+                                                <div>
+                                                    <span className="text-sm font-medium">
+                                                        Item Name
+                                                    </span>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {item.item_name}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sm font-medium">
+                                                        Contact
+                                                    </span>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {item.contact_name}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <DialogFooter className="mt-4">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() =>
+                                                    setIsDeleteOpen(false)
+                                                }
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={handleDelete}
+                                            >
+                                                Delete Item
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                             </CardContent>
                         </Card>
                     </div>

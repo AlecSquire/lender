@@ -24,7 +24,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/test', [NotificationController::class, 'sendTestEmail']);
+// Route::get('/test', [NotificationController::class, 'sendTestEmail']);
 
 // Route::resource('item', ItemController::class);
 

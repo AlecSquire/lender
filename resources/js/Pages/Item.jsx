@@ -42,9 +42,10 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { router } from "@inertiajs/react";
 export default function Item() {
-    const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [item, setItem] = useState(null);
     const [error, setError] = useState(null);
+    const [sending, setSending] = useState(false);
     const [notes, setNotes] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -73,6 +74,32 @@ export default function Item() {
 
         fetchItem();
     }, [id]);
+
+    const notify = async (item) => {
+        try {
+            setSending(true);
+            const response = await fetch("/api/notify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    ...item,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to send notification");
+            }
+
+            const result = await response.json();
+            console.log("Notification sent:", result);
+        } catch (error) {
+            console.error("Error occurred when sending notification:", error);
+        } finally {
+            setSending(false);
+        }
+    };
 
     const handleNotesUpdate = async () => {
         setIsSaving(true);
@@ -130,10 +157,10 @@ export default function Item() {
                         <div className="text-red-500">{error}</div>
                         <Button
                             variant="outline"
-                            onClick={() => window.location.reload()}
+                            onClick={router.visit(route("dashboard"))}
                             className="mt-4"
                         >
-                            Try Again
+                            Take me home
                         </Button>
                     </CardContent>
                 </Card>
@@ -353,8 +380,12 @@ export default function Item() {
                                 <CardTitle>Quick Actions</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                                <Button className="w-full" variant="secondary">
-                                    Send Reminder
+                                <Button
+                                    className="w-full"
+                                    variant="secondary"
+                                    onClick={notify}
+                                >
+                                    {sending ? "Sending.." : "Send reminder"}
                                 </Button>
 
                                 <Dialog

@@ -23,7 +23,7 @@ Route::apiResource('items', ItemController::class);
 Route::apiResource('users', UserController::class);
 Route::apiResource('borrowers', BorrowerController::class);
 Route::apiResource('lenders', LenderController::class);
-Route::post('/notify', [NotificationController::class, 'store']);
+Route::apiResource('notify', NotificationController::class);
 
 //created via the resource route
 // Action	Method	Endpoint	Controller Method

@@ -14,7 +14,12 @@ use App\Mail\PostmarkTestMail;
 
 class NotificationController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    public function processNotification(Request $request)
+    {
+        $validated = $request->validate($item);
+        return new ItemRequestEmail($item);
+    }
+    public function ItemRequestEmail(Request $request): RedirectResponse
     {
         $item = Item::findOrFail($request->id);
         Mail::to($request->contact_email)->send(new ItemDue($item));

@@ -13,7 +13,7 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
             <main>{children}</main>
         </ThemeProvider>
     );

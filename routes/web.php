@@ -18,6 +18,8 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+Route::redirect('/login', '/auth/login')->name('login');
+Route::redirect('/register', '/auth/register')->name('register');
 
 // Dashboard
 Route::get('/dashboard', function () {

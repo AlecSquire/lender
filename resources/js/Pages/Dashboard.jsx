@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
@@ -33,7 +33,7 @@ export default function Dashboard({ payments }) {
             <SidebarProvider>
                 <SidebarInset className="bg-background min-h-screen">
                     <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center border-b bg-background px-6">
-                        <h1 className="text-xl font-semibold">Dashboard</h1>
+                        <h1 className="text-xl font-semibold"> Lender</h1>
                         <Separator
                             orientation="vertical"
                             className="mx-4 h-6"
@@ -42,9 +42,16 @@ export default function Dashboard({ payments }) {
                             href="/dashboard"
                             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                         >
-                            Lender
+                            Borrowed But Never Forgotten
                         </a>
                         <div className="ml-auto">
+                            <Link
+                                href="/logout"
+                                method="post"
+                                className="text-sm font-medium text-muted-foreground p-5 hover:text-foreground transition-colors"
+                            >
+                                Log out
+                            </Link>
                             <ModeToggle />
                         </div>
                     </header>

@@ -17,21 +17,13 @@ Route::get('/user', function (Request $request) {
 // Route::post('/transaction', function (Request $request) {
 //     return dd($request);
 // })->middleware('auth:sanctum');
-
-Route::apiResource('items', ItemController::class);
-// ->middleware(['auth:sanctum', ]);
-Route::apiResource('users', UserController::class);
-Route::apiResource('borrowers', BorrowerController::class);
-Route::apiResource('lenders', LenderController::class);
-Route::apiResource('notify', NotificationController::class);
-
-//created via the resource route
-// Action	Method	Endpoint	Controller Method
-// Get all users	GET	/api/users	index()
-// Get single user	GET	/api/users/{id}	show($id)
-// Create user	POST	/api/users	store(Request $request)
-// Update user	PUT/PATCH	/api/users/{id}	update(Request $request, $id)
-// Delete user	DELETE	/api/users/{id}	destroy($id)
+Route::middleware('auth')->group(function () {
+    Route::apiResource('items', ItemController::class);
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('borrowers', BorrowerController::class);
+    Route::apiResource('lenders', LenderController::class);
+    Route::apiResource('notify', NotificationController::class);
+});
 
 Route::get('/mailable', function () {
     $item = App\Models\Item::find(3);

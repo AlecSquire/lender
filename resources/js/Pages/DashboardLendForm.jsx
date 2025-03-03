@@ -44,6 +44,7 @@ export default function DashboardLendForm() {
             alert("Submission failed.");
         } finally {
             setIsLoading(false);
+            location.reload();
         }
     };
 

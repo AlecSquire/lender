@@ -9,6 +9,7 @@ use App\Models\Item;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -24,14 +25,14 @@ Route::redirect('/register', '/auth/register')->name('register');
 // Dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 // Route::get('/test', [NotificationController::class, 'sendTestEmail']);
 
 // Route::resource('item', ItemController::class);
 
 // routes/web.php
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Item Page (React Fetches Data)
     Route::get('/item/{id}', function ($id) {
         return Inertia::render('Item', ['id' => $id]);

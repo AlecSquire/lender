@@ -47,6 +47,8 @@ class User extends AuthUser
         ];
     }
 
+
+
     public function items()
     {
         return $this->hasMany(Item::class);

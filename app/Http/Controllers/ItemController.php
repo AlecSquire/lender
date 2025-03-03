@@ -8,6 +8,7 @@ use App\Models\Item;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -22,7 +23,8 @@ class ItemController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $items = Item::all();
+            $userId = Auth::user()->id;
+            $items = Item::where('id', $userId);
 
             return response()->json([
                 'data' => $items,

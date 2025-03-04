@@ -22,7 +22,7 @@
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.2",
         "laravel/pail": "^1.1",
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.21",
         "laravel/sail": "^1.26",
         "laravel/telescope": "^5.5",
         "mockery/mockery": "^1.6",

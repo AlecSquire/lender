@@ -21,15 +21,13 @@ return new class extends Migration
             $table->date('return_date');
             $table->string('contact_email');
             $table->text('item_description')->nullable();
-
+        $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Ensures foreign key exists
 
             // $table->unsignedBigInteger('borrower_id')->nullable();
 
             // $table->foreign('borrower_id')->references('id')->on('borrowers')->nullable();
             // $table->boolean('is_returned')->nullable();
 
-            // $table->unsignedBigInteger('user_id')->nullable();
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
         });
     }

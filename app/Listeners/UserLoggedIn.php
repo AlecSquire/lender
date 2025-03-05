@@ -20,7 +20,7 @@ class UserLoggedIn
      */
     public function handle(Login $event): void
     {
-        $user = $event->user;
+        // $user = $event->user;
         // Perform any functionality to the user here...
     }
 }

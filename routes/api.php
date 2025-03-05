@@ -17,14 +17,14 @@ Route::get('/user', function (Request $request) {
 // Route::post('/transaction', function (Request $request) {
 //     return dd($request);
 // })->middleware('auth:sanctum');
-Route::middleware('auth')->group(function () {
+
+Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('items', ItemController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('borrowers', BorrowerController::class);
     Route::apiResource('lenders', LenderController::class);
     Route::apiResource('notify', NotificationController::class);
 });
-
 Route::get('/mailable', function () {
     $item = App\Models\Item::find(3);
 

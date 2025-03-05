@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
@@ -27,6 +27,12 @@ import { ModeToggle } from "@/Components/mode-toggle";
 import Items from "./Items";
 
 export default function Dashboard({ payments }) {
+    // Use usePage to get auth information from Inertia shared props
+    const { auth } = usePage().props;
+
+    // Check if user is authenticated
+    const isAuthenticated = auth && auth.user;
+
     return (
         <AuthenticatedLayout>
             <Head title="Lender Dashboard" />
@@ -42,16 +48,43 @@ export default function Dashboard({ payments }) {
                             href="/dashboard"
                             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                         >
-                            Borrowed But Never Forgotten
+                            {isAuthenticated &&
+                                (() => {
+                                    const hour = new Date().getHours();
+                                    let greeting = "Good evening";
+                                    if (hour < 12) greeting = "Good morning";
+                                    else if (hour < 18)
+                                        greeting = "Good afternoon";
+                                    return `${greeting}, ${auth.user.name}`;
+                                })()}
                         </a>
-                        <div className="ml-auto">
-                            <Link
-                                href="/logout"
-                                method="post"
-                                className="text-sm font-medium text-muted-foreground p-5 hover:text-foreground transition-colors"
-                            >
-                                Log out
-                            </Link>
+                        <div className="ml-auto flex items-center gap-4">
+                            {isAuthenticated ? (
+                                // Show logout link if user is authenticated
+                                <Link
+                                    href="/logout"
+                                    method="post"
+                                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                    Log out
+                                </Link>
+                            ) : (
+                                // Show login and register links if user is not authenticated
+                                <>
+                                    <Link
+                                        href="/login"
+                                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link
+                                        href="/register"
+                                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Register
+                                    </Link>
+                                </>
+                            )}
                             <ModeToggle />
                         </div>
                     </header>
@@ -68,33 +101,14 @@ export default function Dashboard({ payments }) {
 
                             {/* Quick Lend Form */}
                             <Card className="lg:h-[800px] flex flex-col">
-                                <DashboardLendForm />
+                                <DashboardLendForm
+                                    isAuthenticated={isAuthenticated}
+                                />
                             </Card>
                         </div>
-                        {/*
-                        {/* Bottom Section with Table */}
-                        {/* <Card>
-                            <CardHeader className="border-b bg-muted/50">
-                                <CardTitle>Transaction History</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0">
-                                <MasterTable payments={payments} />
-                            </CardContent>
-                        </Card> */}
                     </div>
                 </SidebarInset>
             </SidebarProvider>
         </AuthenticatedLayout>
     );
-}
-
-{
-    /* Full-width MasterTable (Bottom) */
-}
-{
-    /* <Card className="md:col-span-2">
-                                <CardContent>
-                                    <MasterTable payments={payments} />
-                                </CardContent>
-                            </Card> */
 }

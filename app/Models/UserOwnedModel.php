@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class UserOwnedModel extends Model
 {
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new UserScope);
-    }
+    // protected static function booted(): void
+    // {
+    //     static::addGlobalScope(new UserScope);
+    // }
 }

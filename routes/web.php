@@ -12,15 +12,14 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Dashboard', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
-Route::redirect('/login', '/auth/login')->name('login');
-Route::redirect('/register', '/auth/register')->name('register');
+})->name('dashboard');
+
 
 // Dashboard
 Route::get('/dashboard', function () {
@@ -29,21 +28,17 @@ Route::get('/dashboard', function () {
 
 // Route::get('/test', [NotificationController::class, 'sendTestEmail']);
 
-// Route::resource('item', ItemController::class);
-
 // routes/web.php
-Route::middleware(['auth'])->group(function () {
-    // Item Page (React Fetches Data)
-    Route::get('/item/{id}', function ($id) {
-        return Inertia::render('Item', ['id' => $id]);
-    })->middleware(['auth', 'verified'])->name('item');
+// Item Page (React Fetches Data)
+Route::get('/item/{id}', function ($id) {
+    return Inertia::render('Item', ['id' => $id]);
+})->middleware(['auth', 'verified'])->name('item');
 
-    // Route to load the item details page
-    Route::delete('/item/{id}', [ItemController::class, 'delete'])->name('item.delete');
+// Route to load the item details page
+Route::delete('/item/{id}', [ItemController::class, 'delete'])->name('item.delete');
 
-    // Route for the edit page
-    Route::patch('/item/{id}', [ItemController::class, 'edit'])->name('item.edit');
-});
+// Route for the edit page
+Route::patch('/item/{id}', [ItemController::class, 'edit'])->name('item.edit');
 
 // Lending & Borrowing Pages
 Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth', 'verified'])->name('lend');
@@ -64,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 
 require __DIR__ . '/auth.php';

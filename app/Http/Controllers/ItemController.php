@@ -23,11 +23,10 @@ class ItemController extends Controller
     public function index(): JsonResponse
     {
         try {
-            // $userId = Auth::user()->id;
-            // $items = Item::where('id', $userId);
-            $items = Item::all();
+            $userItems = Item::where('user_id', Auth::id())->get();
+
             return response()->json([
-                'data' => $items,
+                'data' => $userItems,
                 'status' => 'success'
             ]);
         } catch (\Exception $e) {
@@ -46,49 +45,52 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
- public function store(Request $request): JsonResponse
-{
-    try {
-        $validated = $request->validate([
-            'contact_name' => 'required|string|max:225',
-            'transaction_type' => 'required|in:lending,borrowing',
-            'item_name' => 'required|string|max:225',
-            'return_date' => 'required|date',
-            'contact_email' => 'required|email',
-            'item_description' => 'nullable|string|max:500',
-        ]);
+    public function store(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'contact_name' => 'required|string|max:225',
+                'transaction_type' => 'required|in:lending,borrowing',
+                'item_name' => 'required|string|max:225',
+                'return_date' => 'required|date',
+                'contact_email' => 'required|email',
+                'item_description' => 'nullable|string|max:500',
+            ]);
 
-        // Add the authenticated user's ID to the validated data
-        $validated['user_id'] = Auth::id();
+            // Add the authenticated user's ID to the validated data
+            $validated['user_id'] = Auth::id();
+            Log::debug($validated);
 
-        // Create a new item in the database
-        $item = Item::create($validated);
+            // Create a new item in the database
+            $item = Item::create($validated);
 
-        return response()->json([
-            'message' => 'Item created successfully!',
-            'item' => $item
-        ], 201);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'message' => 'Validation failed.',
-            'errors' => $e->errors() // This will return the validation error messages
-        ], 422); // Unprocessable Entity HTTP status code
+            return response()->json([
+                'message' => 'Item created successfully!',
+                'item' => $item
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->errors() // This will return the validation error messages
+            ], 422); // Unprocessable Entity HTTP status code
+        }
     }
-}
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
+        $item = Item::where('id', $id)
+            ->where('user_id', Auth::id())->get()
+            ->firstOrFail();
 
-        $item = new ItemResource(Item::findOrFail($id));
         return response()->json([
-            'data' => $item,
+            'data' => new ItemResource($item),
             'status' => 'success'
         ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      */

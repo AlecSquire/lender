@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('return_date');
             $table->string('contact_email');
             $table->text('item_description')->nullable();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Ensures foreign key exists
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Ensures foreign key exists
 
             // $table->unsignedBigInteger('borrower_id')->nullable();
 

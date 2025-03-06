@@ -32,21 +32,24 @@ Route::get('/dashboard', function () {
 // Item Page (React Fetches Data)
 Route::get('/item/{id}', function ($id) {
     return Inertia::render('Item', ['id' => $id]);
-})->middleware(['auth', 'verified'])->name('item');
+})->middleware(['auth'])->name('item');
 
-// Route to load the item details page
-Route::delete('/item/{id}', [ItemController::class, 'delete'])->name('item.delete');
+Route::delete('/item/{id}', [ItemController::class, 'delete'])
+    ->middleware(['auth'])
+    ->name('item.delete');
 
-// Route for the edit page
-Route::patch('/item/{id}', [ItemController::class, 'edit'])->name('item.edit');
+Route::patch('/item/{id}', [ItemController::class, 'edit'])
+    ->middleware(['auth'])
+    ->name('item.edit');
+
 
 // Lending & Borrowing Pages
-Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth', 'verified'])->name('lend');
-Route::get('/borrower', fn() => Inertia::render('Borrower'))->middleware(['auth', 'verified'])->name('borrower');
-Route::get('/lender', fn() => Inertia::render('Lender'))->middleware(['auth', 'verified'])->name('lender');
+Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth'])->name('lend');
+Route::get('/borrower', fn() => Inertia::render('Borrower'))->middleware(['auth'])->name('borrower');
+Route::get('/lender', fn() => Inertia::render('Lender'))->middleware(['auth'])->name('lender');
 
 // User Management
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');

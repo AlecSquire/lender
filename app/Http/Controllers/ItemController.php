@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ItemResource;
 use Illuminate\Http\Request;
 use App\Models\Item;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
 
 // use Illuminate\Pagination\Paginator;
 
@@ -24,6 +21,7 @@ class ItemController extends Controller
     {
         try {
             $userItems = Item::where('user_id', Auth::id())->get();
+            // $userItems = Item::all();
 
             return response()->json([
                 'data' => $userItems,
@@ -47,6 +45,8 @@ class ItemController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        Log::debug('Request data:', $request->all());
+        Log::debug('Current user ID: ' . Auth::id());
         try {
             $validated = $request->validate([
                 'contact_name' => 'required|string|max:225',
@@ -60,10 +60,11 @@ class ItemController extends Controller
             // Add the authenticated user's ID to the validated data
             $validated['user_id'] = Auth::id();
             Log::debug($validated);
+            Log::debug('Validated data:', $validated);
 
             // Create a new item in the database
             $item = Item::create($validated);
-
+            Log::debug('Created item:', $item->toArray());
             return response()->json([
                 'message' => 'Item created successfully!',
                 'item' => $item
@@ -83,7 +84,7 @@ class ItemController extends Controller
     public function show(string $id)
     {
         $item = Item::where('id', $id)
-            ->where('user_id', Auth::id())->get()
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         return response()->json([
@@ -110,7 +111,7 @@ class ItemController extends Controller
                 'item_description' => 'nullable|string|max:500',
             ]);
 
-            $item = Item::where('id', $id);
+            $item = Item::where('id', $id)->firstOrFail();
 
             $item->update($validated);
 

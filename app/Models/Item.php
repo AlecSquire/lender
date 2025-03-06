@@ -25,7 +25,7 @@ class Item extends Model
         'contact_email',
         'transaction_type',
         'item_name',
-        'description',
+        'item_description',
         'is_returned',
         'borrower_id',
         'user_id',

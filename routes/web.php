@@ -43,25 +43,25 @@ Route::patch('/item/{id}', [ItemController::class, 'edit'])
     ->name('item.edit');
 
 
-// Lending & Borrowing Pages
-Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth'])->name('lend');
-Route::get('/borrower', fn() => Inertia::render('Borrower'))->middleware(['auth'])->name('borrower');
-Route::get('/lender', fn() => Inertia::render('Lender'))->middleware(['auth'])->name('lender');
+// // Lending & Borrowing Pages
+// Route::get('/lend', fn() => Inertia::render('Lend'))->middleware(['auth'])->name('lend');
+// Route::get('/borrower', fn() => Inertia::render('Borrower'))->middleware(['auth'])->name('borrower');
+// Route::get('/lender', fn() => Inertia::render('Lender'))->middleware(['auth'])->name('lender');
 
-// User Management
-Route::middleware(['auth'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
-    Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
-    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.delete');
-});
+// // User Management
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+//     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+//     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+//     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.delete');
+// });
 
-// Profile Routes
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// // Profile Routes
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 
 

@@ -20,7 +20,11 @@ class ItemController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $userItems = Item::where('user_id', Auth::id())->get();
+            $user = Auth::user();
+            $userId = Auth::id();
+            Log::debug($user);
+            Log::debug($userId);
+            $userItems = Item::where('user_id',)->get();
             // $userItems = Item::all();
 
             return response()->json([
@@ -45,8 +49,6 @@ class ItemController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        Log::debug('Request data:', $request->all());
-        Log::debug('Current user ID: ' . Auth::id());
         try {
             $validated = $request->validate([
                 'contact_name' => 'required|string|max:225',
@@ -64,7 +66,7 @@ class ItemController extends Controller
 
             // Create a new item in the database
             $item = Item::create($validated);
-            Log::debug('Created item:', $item->toArray());
+
             return response()->json([
                 'message' => 'Item created successfully!',
                 'item' => $item

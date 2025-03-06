@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
 // Route for checking authenticated user
-Route::middleware('auth')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -20,7 +20,7 @@ Route::post('/tokens/create', function (Request $request) {
 });
 // All protected API resources
 // routes/api.php
-Route::middleware(['log.api'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::resource('items', ItemController::class);
     Route::resource('users', UserController::class);
     Route::apiResource('notify', NotificationController::class);

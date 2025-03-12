@@ -30,10 +30,18 @@ export default function EditItem() {
         const fetchItem = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/item/${id}`);
+                const response = await fetch(`/api/item/${id}`, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    credentials: "include", // This ensures cookies are sent with the request
+                });
+
                 if (!response.ok) {
                     throw new Error("Failed to fetch item");
                 }
+
                 const itemData = await response.json();
 
                 setItem(itemData);

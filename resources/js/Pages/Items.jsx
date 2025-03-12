@@ -19,8 +19,19 @@ export default function Items() {
 
     const fetchItems = useCallback(async (pageUrl = "/api/items") => {
         try {
-            const response = await fetch(pageUrl);
+            const response = await fetch(pageUrl, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                },
+                credentials: "include", // Ensures cookies are sent with the request
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch items");
+            }
+
             const allItems = await response.json();
+            console.log("API response:", allItems);
             setItems(allItems.data);
         } catch (error) {
             console.error("Error occurred when fetching items:", error);
@@ -32,32 +43,49 @@ export default function Items() {
     }, [fetchItems]);
 
     const toggleReturned = async (id) => {
-        const updatedItems = items.map((item) =>
-            item.id === id ? { ...item, is_returned: !item.is_returned } : item
-        );
-        setItems(updatedItems);
-    };
-
-    const notify = async (item) => {
         try {
-            const response = await fetch("/api/notify", {
+            // First, get the CSRF token
+            const getCsrfToken = () => {
+                const tokenMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+                return tokenMatch ? decodeURIComponent(tokenMatch[1]) : null;
+            };
+
+            const token = getCsrfToken();
+
+            if (!token) {
+                throw new Error("CSRF token not found");
+            }
+
+            // Find the current item to get its current status
+            const currentItem = items.find((item) => item.id === id);
+            const newStatus = !currentItem.is_returned;
+
+            // Update UI optimistically
+            const updatedItems = items.map((item) =>
+                item.id === id ? { ...item, is_returned: newStatus } : item
+            );
+            setItems(updatedItems);
+
+            // Send update to server
+            const response = await fetch(`/api/items/${id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
+                    "X-XSRF-TOKEN": token,
                 },
-                body: JSON.stringify({
-                    ...item,
-                }),
+                credentials: "include",
+                body: JSON.stringify({ is_returned: newStatus }),
             });
-            if (!response.ok) {
-                throw new Error("Failed to send notification");
-            }
 
-            const result = await response.json();
-            console.log("Notification sent:", result);
+            if (!response.ok) {
+                // If the server request fails, revert the UI change
+                setItems(items);
+                throw new Error("Failed to update item status");
+            }
         } catch (error) {
-            console.error("Error occurred when sending notification:", error);
+            console.error("Error toggling returned status:", error);
+            // You might want to add a user-visible error message here
         }
     };
 

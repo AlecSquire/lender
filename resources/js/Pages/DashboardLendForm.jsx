@@ -76,7 +76,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
             </div>
         );
     };
-
     const onSubmit = async (data) => {
         setIsLoading(true);
 
@@ -87,11 +86,25 @@ export default function DashboardLendForm({ isAuthenticated }) {
                 credentials: "include", // Ensures cookies are sent
             });
 
+            // Get the CSRF token from the cookie
+            const getCsrfToken = () => {
+                const tokenMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+                return tokenMatch ? decodeURIComponent(tokenMatch[1]) : null;
+            };
+
+            const token = getCsrfToken();
+
+            if (!token) {
+                throw new Error("CSRF token not found");
+            }
+
             // Then, make the API request
             const response = await fetch("/api/items", {
                 method: "POST",
                 headers: {
+                    Accept: "application/json",
                     "Content-Type": "application/json",
+                    "X-XSRF-TOKEN": token,
                 },
                 credentials: "include", // Ensures session is recognized
                 body: JSON.stringify(data),
@@ -109,7 +122,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
             setIsLoading(false);
         }
     };
-
     const handleLogin = () => {
         window.location.href = "/login";
     };

@@ -24,7 +24,7 @@ Route::get('/', function () {
 // Dashboard
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['web'])->name('dashboard');
 
 // Route::get('/test', [NotificationController::class, 'sendTestEmail']);
 
@@ -32,14 +32,14 @@ Route::get('/dashboard', function () {
 // Item Page (React Fetches Data)
 Route::get('/item/{id}', function ($id) {
     return Inertia::render('Item', ['id' => $id]);
-})->middleware(['auth'])->name('item');
+})->middleware(['web'])->name('item');
 
 Route::delete('/item/{id}', [ItemController::class, 'delete'])
-    ->middleware(['auth'])
+    ->middleware(['web'])
     ->name('item.delete');
 
 Route::patch('/item/{id}', [ItemController::class, 'edit'])
-    ->middleware(['auth'])
+    ->middleware(['web'])
     ->name('item.edit');
 
 

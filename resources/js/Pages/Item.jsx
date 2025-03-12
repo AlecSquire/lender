@@ -51,15 +51,22 @@ export default function Item() {
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const url = usePage().url;
     const id = url.split("/").pop();
-
     useEffect(() => {
         const fetchItem = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/items/${id}`);
+                const response = await fetch(`/api/items/${id}`, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                    credentials: "include", // This ensures cookies are sent with the request
+                });
+
                 if (!response.ok) {
                     throw new Error("Failed to fetch item");
                 }
+
                 const data = await response.json();
                 setItem(data.data);
                 setNotes(data.data.notes || "");

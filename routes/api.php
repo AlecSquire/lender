@@ -20,11 +20,13 @@ Route::post('/tokens/create', function (Request $request) {
 });
 // All protected API resources
 // routes/api.php
-Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('items', ItemController::class);
-    Route::resource('users', UserController::class);
-    Route::apiResource('notify', NotificationController::class);
-});
+// Route::middleware('auth:sanctum')->group(function () {
+Route::resource('items', ItemController::class)->parameters([
+    'items' => 'id'
+]);
+Route::resource('users', UserController::class);
+Route::apiResource('notify', NotificationController::class);
+// });
 // Keep this test route outside of auth if needed
 Route::get('/mailable', function () {
     $item = App\Models\Item::find(3);

@@ -26,7 +26,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['web'])->name('dashboard');
 
-// Route::get('/test', [NotificationController::class, 'sendTestEmail']);
+Route::get('/test', [NotificationController::class, 'sendTestEmail']);
 
 // routes/web.php
 // Item Page (React Fetches Data)

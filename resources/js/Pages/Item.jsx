@@ -90,6 +90,10 @@ export default function Item() {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
+                    "X-CSRF-TOKEN":
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute("content") || "",
                 },
                 body: JSON.stringify({
                     ...item,
@@ -115,6 +119,10 @@ export default function Item() {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-CSRF-TOKEN":
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute("content") || "",
                 },
                 body: JSON.stringify({ notes }),
             });

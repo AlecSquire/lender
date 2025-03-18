@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Log;
 
 class ItemController extends Controller
 {
+
+    // public function __construct()
+    // {
+    //     $this->authorizeResource(Item::class, 'item');
+    // }
+
     /**
      * Display a listing of the resource.
      */
@@ -20,11 +26,9 @@ class ItemController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $user = Auth::user();
             $userId = Auth::id();
-            Log::debug($user);
             Log::debug($userId);
-            $userItems = Item::where('user_id',)->get();
+            $userItems = Item::where('id', $userId)->get();
             // $userItems = Item::all();
 
             return response()->json([
@@ -97,7 +101,7 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) {}
+    public function edit($id) {}
     /**
      * Update the specified resource in storage.
      */
@@ -132,9 +136,10 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy($id): JsonResponse
     {
         try {
+            Log::debug('made it to delete');
             $item = Item::findOrFail($id);
             $item->delete();
 

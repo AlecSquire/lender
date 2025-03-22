@@ -27,6 +27,13 @@ import {
     ChevronUp,
     PenLine,
 } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export default function DashboardLendForm({ isAuthenticated }) {
     const {
@@ -35,6 +42,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
         control,
         formState: { errors },
         watch,
+        setValue,
     } = useForm({
         defaultValues: {
             transaction_type: "lending",
@@ -114,10 +122,8 @@ export default function DashboardLendForm({ isAuthenticated }) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || "Failed to submit");
             }
-
-            alert("Item saved successfully!");
+            reload();
         } catch (error) {
-            alert(`Submission failed: ${error.message}`);
         } finally {
             setIsLoading(false);
         }
@@ -128,6 +134,35 @@ export default function DashboardLendForm({ isAuthenticated }) {
 
     const handleRegister = () => {
         window.location.href = "/register";
+    };
+    // Add this function in your component
+    const handleRoughReturnChange = (value) => {
+        const today = new Date();
+        let returnDate = new Date(today);
+
+        switch (value) {
+            case "1week":
+                returnDate.setDate(today.getDate() + 7);
+                break;
+            case "1month":
+                returnDate.setMonth(today.getMonth() + 1);
+                break;
+            case "3months":
+                returnDate.setMonth(today.getMonth() + 3);
+                break;
+            case "6months":
+                returnDate.setMonth(today.getMonth() + 6);
+                break;
+            case "1year":
+                returnDate.setFullYear(today.getFullYear() + 1);
+                break;
+        }
+
+        // Format date as YYYY-MM-DD for the input field
+        const formattedDate = returnDate.toISOString().split("T")[0];
+
+        // Set the value in your form
+        setValue("return_date", formattedDate);
     };
 
     return (
@@ -340,28 +375,72 @@ export default function DashboardLendForm({ isAuthenticated }) {
 
                                 {/* Return Date */}
                                 <div className="space-y-2">
-                                    <Label
-                                        htmlFor="return_date"
-                                        className="text-sm font-medium"
-                                    >
-                                        Return Date{" "}
-                                        <span className="text-destructive">
-                                            *
-                                        </span>
-                                    </Label>
-                                    <Input
-                                        id="return_date"
-                                        type="date"
-                                        className="h-10"
-                                        {...register("return_date", {
-                                            required: "Return date is required",
-                                        })}
-                                    />
-                                    {errors.return_date && (
-                                        <p className="text-xs text-destructive mt-1">
-                                            {errors.return_date.message}
-                                        </p>
-                                    )}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {/* Rough Return Date - Left column */}
+                                        <div>
+                                            <Label
+                                                htmlFor="rough_return_period"
+                                                className="text-sm font-medium"
+                                            >
+                                                Rough Return Date
+                                            </Label>
+                                            <Select
+                                                onValueChange={(value) =>
+                                                    handleRoughReturnChange(
+                                                        value
+                                                    )
+                                                }
+                                            >
+                                                <SelectTrigger className="h-10 w-full">
+                                                    <SelectValue placeholder="Select period" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="1week">
+                                                        1 week
+                                                    </SelectItem>
+                                                    <SelectItem value="1month">
+                                                        1 month
+                                                    </SelectItem>
+                                                    <SelectItem value="3months">
+                                                        3 months
+                                                    </SelectItem>
+                                                    <SelectItem value="6months">
+                                                        6 months
+                                                    </SelectItem>
+                                                    <SelectItem value="1year">
+                                                        1 year
+                                                    </SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Exact Return Date - Right column */}
+                                        <div>
+                                            <Label
+                                                htmlFor="return_date"
+                                                className="text-sm font-medium"
+                                            >
+                                                Exact Return Date{" "}
+                                                <span className="text-destructive">
+                                                    *
+                                                </span>
+                                            </Label>
+                                            <Input
+                                                id="return_date"
+                                                type="date"
+                                                className="h-10"
+                                                {...register("return_date", {
+                                                    required:
+                                                        "Return date is required",
+                                                })}
+                                            />
+                                            {errors.return_date && (
+                                                <p className="text-xs text-destructive mt-1">
+                                                    {errors.return_date.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Description Toggle Button */}

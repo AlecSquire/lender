@@ -54,4 +54,9 @@ class Item extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('user_id', Auth::id())->where('id', $value)->firstOrFail();
+    }
 }

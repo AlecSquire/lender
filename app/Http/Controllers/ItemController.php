@@ -25,23 +25,16 @@ class ItemController extends Controller
     // List all items
     public function index(): JsonResponse
     {
-        try {
-            $userId = Auth::id();
-            Log::debug($userId);
-            $userItems = Item::where('id', $userId)->get();
-            // $userItems = Item::all();
+        $userItems = Item::query()
+            ->where('user_id', Auth::id())->get();
+        // $userItems = Item::all();
 
-            return response()->json([
-                'data' => $userItems,
-                'status' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error fetching items',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'data' => $userItems,
+            'status' => 'success'
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

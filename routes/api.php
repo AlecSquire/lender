@@ -19,15 +19,13 @@ Route::post('/tokens/create', function (Request $request) {
     return ['token' => $token->plainTextToken];
 });
 // All protected API resources
-// routes/api.php
-// Route::middleware('auth:sanctum')->group(function () {
+
 Route::resource('items', ItemController::class)->parameters([
     'items' => 'id'
 ]);
 Route::resource('users', UserController::class);
 Route::apiResource('notify', NotificationController::class);
-// });
-// Keep this test route outside of auth if needed
+
 Route::get('/mailable', function () {
     $item = App\Models\Item::find(3);
     return new App\Mail\ItemDue($item);

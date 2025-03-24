@@ -14,6 +14,15 @@ use App\Mail\PostmarkTestMail;
 
 class NotificationController extends Controller
 {
+
+    public function index()
+    {
+        $email = new PostmarkTestMail();
+        $email->to('alecsquire@gmail.com');
+        Mail::send($email);
+    }
+
+
     public function processNotification(Request $request)
     {
         $validated = $request->validate($item);

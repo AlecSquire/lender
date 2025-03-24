@@ -90,7 +90,7 @@ export default function Items() {
     };
 
     return (
-        <AuthenticatedLayout>
+        <>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                 {items.length > 0 ? (
                     items.map((item) => {
@@ -208,6 +208,6 @@ export default function Items() {
                     </Card>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </>
     );
 }

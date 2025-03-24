@@ -122,7 +122,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || "Failed to submit");
             }
-            reload();
+            window.location.reload();
         } catch (error) {
         } finally {
             setIsLoading(false);

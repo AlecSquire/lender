@@ -25,9 +25,7 @@ return new class extends Migration
             // $table->unsignedBigInteger('borrower_id')->nullable();
 
             // $table->foreign('borrower_id')->references('id')->on('borrowers')->nullable();
-            // $table->boolean('is_returned')->nullable();
-
-
+            $table->boolean('is_returned')->nullable();
         });
     }
 

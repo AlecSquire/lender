@@ -99,11 +99,16 @@ export default function Item({ auth }) {
                             .querySelector('meta[name="csrf-token"]')
                             ?.getAttribute("content") || "",
                 },
-                body: JSON.stringify({ ...item }),
+                body: JSON.stringify(item),
             });
+
             if (!response.ok) {
-                throw new Error("Failed to send notification");
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || "Failed to send notification"
+                );
             }
+
             const result = await response.json();
             console.log("Notification sent:", result);
         } catch (error) {

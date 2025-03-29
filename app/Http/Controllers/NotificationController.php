@@ -10,54 +10,26 @@ use App\Models\Item;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PostmarkTestMail;
-
+use App\Traits\ApiResponses;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
+    use ApiResponses;
 
-    public function index()
+    public function store(Request $request)
     {
-        $email = new PostmarkTestMail();
-        $email->to('alecsquire@gmail.com');
-        Mail::send($email);
-    }
+        $request->validate([
+            'id' => 'integer'
+        ]);
 
+        $item = Item::findOrFail($request->input('id'));
 
-    public function processNotification(Request $request)
-    {
-        $validated = $request->validate($item);
-        return new ItemRequestEmail($item);
-    }
-    public function ItemRequestEmail(Request $request): RedirectResponse
-    {
-        $item = Item::findOrFail($request->id);
-        Mail::to($request->contact_email)->send(new ItemDue($item));
+        Mail::to($item->contact_email)->send(new ItemDue($item));
 
-        return redirect('/');
-    }
-
-
-    public function sendTestEmail()
-    {
-        try {
-            $email = new PostmarkTestMail();
-
-            // Setting the recipient
-            $email->to('hello@alecsquire.co.uk');
-
-            // Send the email directly
-            $result = $email->send(app('mailer'));
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Email sent successfully',
-                'result' => $result
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send email: ' . $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Notification sent successfully',
+            'status' => 'success'
+        ]);
     }
 }

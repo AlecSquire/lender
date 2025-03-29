@@ -22,14 +22,5 @@ Route::resource('items', ItemController::class)->parameters([
     'items' => 'id'
 ]);
 Route::resource('users', UserController::class);
-Route::apiResource('notify', NotificationController::class);
 
-Route::get('/mailable', function ($request) {
-    $item = App\Models\Item::find($request->id);
-    return new App\Mail\ItemDue($item);
-});
-
-Route::get('/send-postmark', [NotificationController::class, 'index']);
-Route::get('/send-test-email', [NotificationController::class, 'sendTestEmail']);
-Route::get('/item-email/{id}', [NotificationController::class, 'ItemRequestEmail']);
-Route::post('/process-notification', [NotificationController::class, 'processNotification']);
+Route::resource('/notify', NotificationController::class);

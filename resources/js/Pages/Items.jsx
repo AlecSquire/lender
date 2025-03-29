@@ -151,7 +151,7 @@ export default function Items() {
                                                 : daysRemaining > 0
                                                 ? `${daysRemaining} days remaining`
                                                 : daysRemaining === 0
-                                                ? "Due today"
+                                                ? "Due!"
                                                 : `${Math.abs(
                                                       daysRemaining
                                                   )} days overdue`}

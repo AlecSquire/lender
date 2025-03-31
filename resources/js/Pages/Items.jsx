@@ -24,14 +24,13 @@ export default function Items() {
                 headers: {
                     Accept: "application/json",
                 },
-                credentials: "include", // Ensures cookies are sent with the request
+                credentials: "include",
             });
             if (!response.ok) {
                 throw new Error("Failed to fetch items");
             }
 
             const allItems = await response.json();
-            console.log("API response:", allItems);
             setItems(allItems.data);
         } catch (error) {
             console.error("Error occurred when fetching items:", error);

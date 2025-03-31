@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { router } from "@inertiajs/react";
+
 import {
     Card,
     CardHeader,
@@ -129,11 +131,11 @@ export default function DashboardLendForm({ isAuthenticated }) {
         }
     };
     const handleLogin = () => {
-        window.location.href = "/login";
+        router.visit("/login");
     };
 
     const handleRegister = () => {
-        window.location.href = "/register";
+        router.visit("/register");
     };
     // Add this function in your component
     const handleRoughReturnChange = (value) => {
@@ -497,7 +499,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                     {isLoading ? (
                                         <span className="flex items-center">
                                             <svg
-                                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                                className="animate-spin ml-1 mr-2 h-4 w-4 text-white"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"

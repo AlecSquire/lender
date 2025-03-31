@@ -18,10 +18,8 @@ import {
 } from "@/components/ui/sidebar";
 import MasterTable from "@/Pages/MasterTable/Index";
 import DashboardLendForm from "./DashboardLendForm";
-import { Bell, Calendar, Users } from "lucide-react";
-
+import { Bell, Calendar, Users, CheckCheck, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CheckCheck, X } from "lucide-react";
 import { differenceInDays, parseISO } from "date-fns";
 import { ModeToggle } from "@/Components/mode-toggle";
 import Items from "./Items";
@@ -31,7 +29,20 @@ export default function Dashboard({ payments }) {
     const { auth } = usePage().props;
 
     // Check if user is authenticated
-    const isAuthenticated = auth && auth.user;
+    const isAuthenticated = !!auth.user;
+
+    // Calculate greeting outside of JSX
+    const [greeting, setGreeting] = useState("");
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            const hour = new Date().getHours();
+            let greetingText = "Good evening";
+            if (hour < 12) greetingText = "Good morning";
+            else if (hour < 18) greetingText = "Good afternoon";
+            setGreeting(`${greetingText}, ${auth.user.name}`);
+        }
+    }, [isAuthenticated, auth.user]);
 
     return (
         <AuthenticatedLayout>
@@ -48,15 +59,7 @@ export default function Dashboard({ payments }) {
                             href="/dashboard"
                             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                         >
-                            {isAuthenticated &&
-                                (() => {
-                                    const hour = new Date().getHours();
-                                    let greeting = "Good evening";
-                                    if (hour < 12) greeting = "Good morning";
-                                    else if (hour < 18)
-                                        greeting = "Good afternoon";
-                                    return `${greeting}, ${auth.user.name}`;
-                                })()}
+                            {isAuthenticated && greeting}
                         </a>
                         <div className="ml-auto flex items-center gap-4">
                             {isAuthenticated ? (

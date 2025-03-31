@@ -41,10 +41,9 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"; // Correct import
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 export default function Item({ auth }) {
-    // Accept auth as a prop
     const [loading, setLoading] = useState(true);
     const [item, setItem] = useState(null);
     const [error, setError] = useState(null);
@@ -52,8 +51,37 @@ export default function Item({ auth }) {
     const [notes, setNotes] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isConfirmReturnOpen, setIsConfirmReturnOpen] = useState(false);
     const { url } = usePage();
     const id = url.split("/").pop();
+
+    // Format date safely
+    const formatDate = (dateString) => {
+        try {
+            if (!dateString) return "No date returned";
+
+            // First check if the date is valid
+            const timestamp = Date.parse(dateString);
+            if (isNaN(timestamp)) return "No date returned";
+
+            const date = new Date(dateString);
+
+            // Check if the date is Jan 1, 1970 (Unix epoch start or invalid date)
+            if (
+                date.getFullYear() === 1970 &&
+                date.getMonth() === 0 &&
+                date.getDate() === 1
+            ) {
+                return "No date returned";
+            }
+
+            // Use format from date-fns for valid dates
+            return format(date, "PPP");
+        } catch (error) {
+            console.error("Error formatting date:", error);
+            return "No date returned";
+        }
+    };
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -72,6 +100,10 @@ export default function Item({ auth }) {
                 }
 
                 const data = await response.json();
+                console.log(
+                    "Return date from API:",
+                    data.data?.return_date || data.return_date
+                );
                 setItem(data.data || data); // Handle nested data or flat response
                 setNotes(data.data?.notes || data.notes || "");
                 setError(null);
@@ -109,8 +141,7 @@ export default function Item({ auth }) {
                 );
             }
 
-            const result = await response.json();
-            console.log("Notification sent:", result);
+            await response.json();
         } catch (error) {
             console.error("Error sending notification:", error);
         } finally {
@@ -125,6 +156,7 @@ export default function Item({ auth }) {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
+                    Accept: "application/json",
                     "X-CSRF-TOKEN":
                         document
                             .querySelector('meta[name="csrf-token"]')
@@ -134,6 +166,14 @@ export default function Item({ auth }) {
             });
 
             if (!response.ok) throw new Error("Failed to update notes");
+
+            // Update the item state with the new notes
+            setItem((prev) => ({
+                ...prev,
+                notes,
+            }));
+
+            // Show a success message or toast here if you have one
         } catch (error) {
             console.error("Error updating notes:", error);
         } finally {
@@ -161,9 +201,31 @@ export default function Item({ auth }) {
         }
     };
 
+    const handleStatusChange = async (isReturned) => {
+        try {
+            const response = await fetch(`/api/items/${id}`, {
+                method: "DELETE", // Using DELETE as requested for "Returned" status
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN":
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute("content") || "",
+                },
+            });
+
+            if (!response.ok) throw new Error("Failed to update item status");
+            router.visit(route("dashboard"));
+        } catch (error) {
+            console.error("Error updating item status:", error);
+        } finally {
+            setIsConfirmReturnOpen(false);
+        }
+    };
+
     return (
         <AuthenticatedLayout
-            user={auth.user} // Pass user from props
+            user={auth.user}
             header={
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold">Item Details</h2>
@@ -289,11 +351,8 @@ export default function Item({ auth }) {
                                                         {
                                                             icon: Calendar,
                                                             label: "Return Date",
-                                                            value: format(
-                                                                new Date(
-                                                                    item.return_date
-                                                                ),
-                                                                "PPP"
+                                                            value: formatDate(
+                                                                item.return_date
                                                             ),
                                                         },
                                                     ].map(
@@ -391,18 +450,89 @@ export default function Item({ auth }) {
                                                         Mark as:
                                                     </Label>
                                                     <div className="grid grid-cols-2 gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="w-full"
+                                                        <Dialog
+                                                            open={
+                                                                isConfirmReturnOpen
+                                                            }
+                                                            onOpenChange={
+                                                                setIsConfirmReturnOpen
+                                                            }
                                                         >
-                                                            <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
-                                                            Returned
-                                                        </Button>
+                                                            <DialogTrigger
+                                                                asChild
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="w-full"
+                                                                    disabled={
+                                                                        item.is_returned
+                                                                    }
+                                                                >
+                                                                    <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
+                                                                    Returned
+                                                                </Button>
+                                                            </DialogTrigger>
+                                                            <DialogContent>
+                                                                <DialogHeader>
+                                                                    <DialogTitle>
+                                                                        Mark as
+                                                                        Returned
+                                                                    </DialogTitle>
+                                                                    <DialogDescription>
+                                                                        Are you
+                                                                        sure you
+                                                                        want to
+                                                                        mark
+                                                                        this
+                                                                        item as
+                                                                        returned?
+                                                                        This
+                                                                        will
+                                                                        delete
+                                                                        the item
+                                                                        from
+                                                                        your
+                                                                        list.
+                                                                    </DialogDescription>
+                                                                </DialogHeader>
+                                                                <DialogFooter className="mt-4">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        onClick={() =>
+                                                                            setIsConfirmReturnOpen(
+                                                                                false
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Cancel
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="default"
+                                                                        onClick={() =>
+                                                                            handleStatusChange(
+                                                                                true
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Confirm
+                                                                    </Button>
+                                                                </DialogFooter>
+                                                            </DialogContent>
+                                                        </Dialog>
+
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
                                                             className="w-full"
+                                                            disabled={
+                                                                !item.is_returned
+                                                            }
+                                                            onClick={() =>
+                                                                handleStatusChange(
+                                                                    false
+                                                                )
+                                                            }
                                                         >
                                                             <XCircle className="mr-2 h-4 w-4 text-yellow-600" />
                                                             Active

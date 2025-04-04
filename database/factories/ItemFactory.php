@@ -19,7 +19,7 @@ class ItemFactory extends Factory
         return [
             'name' => fake()->name(),
             'description' => fake()->text(50),
-            'is_returned' => fake()->boolean(),
+            'isReturned' => fake()->boolean(),
             // 'borrower_id' => fake()->numberBetween(1, 50),
             // 'user_id' => fake()->numberBetween(1, 50),
             'expiry_date' => fake()->date(),

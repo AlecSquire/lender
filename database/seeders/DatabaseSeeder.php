@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
                 'description' => $item['description'],
                 'user_id' => $users->random()->id, // Assign a random user to each item
                 'borrower_id' => $borrowers->random()->id, // Assign a random borrower to each item
-                'is_returned' => true, // Default value or any appropriate value
+                'isReturned' => true, // Default value or any appropriate value
             ]);
         }
     }

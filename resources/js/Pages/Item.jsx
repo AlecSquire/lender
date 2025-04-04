@@ -200,11 +200,10 @@ export default function Item({ auth }) {
             console.error("Error deleting item:", error);
         }
     };
-
     const handleStatusChange = async (isReturned) => {
         try {
             const response = await fetch(`/api/items/${id}`, {
-                method: "DELETE", // Using DELETE as requested for "Returned" status
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN":
@@ -212,14 +211,27 @@ export default function Item({ auth }) {
                             .querySelector('meta[name="csrf-token"]')
                             ?.getAttribute("content") || "",
                 },
+                body: JSON.stringify({ isReturned }),
             });
 
             if (!response.ok) throw new Error("Failed to update item status");
-            router.visit(route("dashboard"));
+
+            // Parse the response to get updated data
+            const updatedItem = await response.json();
+
+            // Update local state
+            setItem((prev) => ({
+                ...prev,
+                isReturned: isReturned,
+            }));
+
+            // Option 1: Stay on page to show the user the status changed
+            setIsConfirmReturnOpen(false);
+
+            // Option 2: Redirect after a short delay
+            // setTimeout(() => router.visit(route("dashboard")), 1000);
         } catch (error) {
             console.error("Error updating item status:", error);
-        } finally {
-            setIsConfirmReturnOpen(false);
         }
     };
 
@@ -429,17 +441,17 @@ export default function Item({ auth }) {
                                                     </span>
                                                     <Badge
                                                         variant={
-                                                            item.is_returned
+                                                            item.isReturned
                                                                 ? "outline"
                                                                 : "secondary"
                                                         }
                                                         className={cn(
-                                                            item.is_returned
+                                                            item.isReturned
                                                                 ? "text-green-600"
                                                                 : "text-yellow-600"
                                                         )}
                                                     >
-                                                        {item.is_returned
+                                                        {item.isReturned
                                                             ? "Returned"
                                                             : "Active"}
                                                     </Badge>
@@ -466,7 +478,7 @@ export default function Item({ auth }) {
                                                                     size="sm"
                                                                     className="w-full"
                                                                     disabled={
-                                                                        item.is_returned
+                                                                        item.isReturned
                                                                     }
                                                                 >
                                                                     <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
@@ -526,7 +538,7 @@ export default function Item({ auth }) {
                                                             size="sm"
                                                             className="w-full"
                                                             disabled={
-                                                                !item.is_returned
+                                                                !item.isReturned
                                                             }
                                                             onClick={() =>
                                                                 handleStatusChange(

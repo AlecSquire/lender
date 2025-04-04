@@ -22,10 +22,10 @@ return new class extends Migration
             $table->string('contact_email');
             $table->text('item_description')->nullable();
             $table->foreignId('user_id');
+            $table->boolean('isReturned')->default(false);
             // $table->unsignedBigInteger('borrower_id')->nullable();
 
             // $table->foreign('borrower_id')->references('id')->on('borrowers')->nullable();
-            $table->boolean('is_returned')->nullable();
         });
     }
 

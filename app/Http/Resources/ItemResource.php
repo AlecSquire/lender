@@ -20,10 +20,10 @@ class ItemResource extends JsonResource
             'id' => $this->id,
             'contact_name' => $this->contact_name,
             'item_name' => $this->item_name,
-            'return_date' => $this->return_name,
+            'return_date' => $this->date,
             'contact_email' => $this->contact_email,
             'item_description' => $this->item_description,
-            'created_at' => $this->created_at,
+            'isReturned' => (bool) $this->isReturned,
         ];
     }
 }

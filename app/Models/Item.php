@@ -26,10 +26,11 @@ class Item extends Model
         'transaction_type',
         'item_name',
         'item_description',
-        'is_returned',
+        'isReturned',
         'borrower_id',
         'user_id',
         'return_date',
+        'isReturned',
     ];
 
     /**

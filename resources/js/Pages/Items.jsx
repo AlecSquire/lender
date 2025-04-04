@@ -57,11 +57,11 @@ export default function Items() {
 
             // Find the current item to get its current status
             const currentItem = items.find((item) => item.id === id);
-            const newStatus = !currentItem.is_returned;
+            const newStatus = !currentItem.isReturned;
 
             // Update UI optimistically
             const updatedItems = items.map((item) =>
-                item.id === id ? { ...item, is_returned: newStatus } : item
+                item.id === id ? { ...item, isReturned: newStatus } : item
             );
             setItems(updatedItems);
 
@@ -74,7 +74,7 @@ export default function Items() {
                     "X-XSRF-TOKEN": token,
                 },
                 credentials: "include",
-                body: JSON.stringify({ is_returned: newStatus }),
+                body: JSON.stringify({ isReturned: newStatus }),
             });
 
             if (!response.ok) {
@@ -137,7 +137,7 @@ export default function Items() {
                                         <span
                                             className={cn(
                                                 "text-sm font-medium",
-                                                item.is_returned
+                                                item.isReturned
                                                     ? "text-green-600"
                                                     : daysRemaining &&
                                                       daysRemaining < 0
@@ -145,7 +145,7 @@ export default function Items() {
                                                     : "text-yellow-600"
                                             )}
                                         >
-                                            {item.is_returned
+                                            {item.isReturned
                                                 ? "Returned"
                                                 : daysRemaining > 0
                                                 ? `${daysRemaining} days remaining`

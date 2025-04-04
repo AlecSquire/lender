@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ItemRequest;
 use App\Http\Resources\ItemResource;
-use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+
 
 // use Illuminate\Pagination\Paginator;
 
 class ItemController extends Controller
 {
-
-    // public function __construct()
-    // {
-    //     $this->authorizeResource(Item::class, 'item');
-    // }
 
     /**
      * Display a listing of the resource.
@@ -27,7 +22,6 @@ class ItemController extends Controller
     {
         $userItems = Item::query()
             ->where('user_id', Auth::id())->get();
-        // $userItems = Item::all();
 
         return response()->json([
             'data' => $userItems,
@@ -35,95 +29,40 @@ class ItemController extends Controller
         ]);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() {}
-
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(ItemRequest $request)
     {
-        try {
-            $validated = $request->validate([
-                'contact_name' => 'required|string|max:225',
-                'transaction_type' => 'required|in:lending,borrowing',
-                'item_name' => 'required|string|max:225',
-                'return_date' => 'required|date',
-                'contact_email' => 'required|email',
-                'item_description' => 'nullable|string|max:500',
-            ]);
+        $data = $request->validated();
+        $data['user_id'] = Auth::id();
 
-            // Add the authenticated user's ID to the validated data
-            $validated['user_id'] = Auth::id();
-            Log::debug($validated);
-            Log::debug('Validated data:', $validated);
-
-            // Create a new item in the database
-            $item = Item::create($validated);
-
-            return response()->json([
-                'message' => 'Item created successfully!',
-                'item' => $item
-            ], 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed.',
-                'errors' => $e->errors() // This will return the validation error messages
-            ], 422); // Unprocessable Entity HTTP status code
-        }
+        $item = Item::create($data);
+        return new ItemResource($item);
     }
-
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): ItemResource
     {
         $item = Item::where('id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        return response()->json([
-            'data' => new ItemResource($item),
-            'status' => 'success'
-        ]);
+        return new ItemResource($item);
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id) {}
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ItemRequest $request, string $id)
     {
-        try {
-            $validated = $request->validate([
-                'contact_name' => 'required|string|max:225',
-                'transaction_type' => 'required|in:lending,borrowing',
-                'item_name' => 'required|string|max:225',
-                'return_date' => 'required|date',
-                'contact_email' => 'required|email',
-                'item_description' => 'nullable|string|max:500',
-            ]);
+        $item = Item::findOrFail($id);
 
-            $item = Item::where('id', $id)->firstOrFail();
+        $item->update($request->validated());
 
-            $item->update($validated);
-
-            return response()->json([
-                'data' => $item,
-                'status' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error fetching items',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return new ItemResource($item);
     }
 
     /**
@@ -131,20 +70,12 @@ class ItemController extends Controller
      */
     public function destroy($id): JsonResponse
     {
-        try {
-            Log::debug('made it to delete');
-            $item = Item::findOrFail($id);
-            $item->delete();
+        $item = Item::findOrFail($id);
+        $item->delete();
 
-            return response()->json([
-                'message' => 'Item deleted successfully',
-                'status' => 'success'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error deleting item',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Item deleted successfully',
+            'status' => 'success'
+        ], 204);
     }
 }

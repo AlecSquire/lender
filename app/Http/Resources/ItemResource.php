@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,6 +23,7 @@ class ItemResource extends JsonResource
             'contact_email' => $this->contact_email,
             'item_description' => $this->item_description,
             'isReturned' => (bool) $this->isReturned,
+
         ];
     }
 }

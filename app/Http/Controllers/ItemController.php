@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ItemRequest;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
+use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
+    use ApiResponses;
 
     /**
      * Display a listing of the resource.
@@ -20,19 +22,13 @@ class ItemController extends Controller
     // List all items
     public function index(): JsonResponse
     {
-        $userItems = Item::query()
-            ->where('user_id', Auth::id())->get();
-
-        return response()->json([
-            'data' => $userItems,
-            'status' => 'success'
-        ]);
+        return $this->ok('Items fetched successfully', Auth::user()->items);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ItemRequest $request)
+    public function store(ItemRequest $request): ItemResource
     {
         $data = $request->validated();
         $data['user_id'] = Auth::id();
@@ -44,38 +40,27 @@ class ItemController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id): ItemResource
+    public function show(Item $id): ItemResource
     {
-        $item = Item::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
-        return new ItemResource($item);
+        return new ItemResource($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ItemRequest $request, string $id)
+    public function update(ItemRequest $request, Item $id): ItemResource
     {
-        $item = Item::findOrFail($id);
+        $id->update($request->validated());
 
-        $item->update($request->validated());
-
-        return new ItemResource($item);
+        return new ItemResource($id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id): JsonResponse
+    public function destroy(Item $id): JsonResponse
     {
-        $item = Item::findOrFail($id);
-        $item->delete();
-
-        return response()->json([
-            'message' => 'Item deleted successfully',
-            'status' => 'success'
-        ], 204);
+        $id->delete();
+        return $this->ok('Item deleted successfully');
     }
 }

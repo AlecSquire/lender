@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Item Return: The Countdown Begins</title>
+    <title>Item Returned</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -58,7 +58,7 @@
 
 <body>
     <div class="container">
-        <h1 class="header">Tick Tock: Return Timer Activated</h1>
+        <h1 class="header">Item marked as returned</h1>
 
         <p>Hey there, {{ $item->contact_name }}!</p>
 
@@ -70,22 +70,8 @@
                 <p><em>Aka:</em> {{ $item->item_description }}</p>
             @endif
 
-            <p><strong>Return Deadline:</strong> {{ $item->return_date }} (No, seriously. We mean it.)</p>
+            <p><strong>Marked as returned.</strong> </p>
         </div>
-
-        <p>Surprise! Remember {{ $item->item_name }}? Shocking, I know, but we actually want it back. Crazy concept,
-            right? Our records show it's due for return.</p>
-
-        <p>Hit the button to mark it as returned:</p>
-
-        <a href="{{ route('item.return.notify', ['item_id' => $item->id]) }} class='cta-button' ">Mark as
-            Returned</a>Mark as
-        Returned</a>
-
-        <p>If you believe you have already returned the item, just hit the button below and we will see handle the next
-            steps.</p>
-
-
 
         <div class="footer">
             <p>© {{ date('Y') }} {{ config('app.name') }} - Masters of the Gentle Reminder</p>

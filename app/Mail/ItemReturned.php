@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Item;
+use App\Models\User;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +12,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ItemDue extends Mailable
+class ItemReturned extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,6 +21,7 @@ class ItemDue extends Mailable
      */
     public function __construct(
         public Item $item,
+        public User $user,
     ) {}
 
     /**
@@ -28,8 +30,8 @@ class ItemDue extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Item Due',
-            to: $this->item->contact_email,
+            subject: 'Item Returned',
+            to: $this->user->email,
         );
     }
 
@@ -39,7 +41,7 @@ class ItemDue extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.due',
+            view: 'emails.returned',
 
         );
     }

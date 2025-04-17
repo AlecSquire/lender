@@ -6,16 +6,33 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ItemDue;
+use App\Mail\ItemReturned;
 use App\Models\Item;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PostmarkTestMail;
 use App\Traits\ApiResponses;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
     use ApiResponses;
+
+    public function markAsReturned(Request $request) {
+       $request->validate([
+            'item_id' => 'required|integer', // Changed 'id' to 'item_id' to match your route parameter
+        ]);
+
+        $item = Item::findOrFail($request->input('item_id'));
+
+        $item->is_returned = true;
+        $item->save();
+
+        $user = Auth::user();
+
+Mail::to($user->email)->send(new ItemReturned($item, $user));
+
+        return $this->ok('Notification sent successfully');
+
+    }
 
     public function store(Request $request)
     {
@@ -27,9 +44,7 @@ class NotificationController extends Controller
 
         Mail::to($item->contact_email)->send(new ItemDue($item));
 
-        return response()->json([
-            'message' => 'Notification sent successfully',
-            'status' => 'success'
-        ]);
+        return $this->ok('Notification sent successfully');
+
     }
 }

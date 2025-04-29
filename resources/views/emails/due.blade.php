@@ -88,7 +88,8 @@
 
 
         <div class="footer">
-            <p>© {{ date('Y') }} {{ config('app.name') }} - Masters of the Gentle Reminder</p>
+            <p>© {{ date('Y') }} {{ config('app.name') }} - Borrowed, but never forgotten
+            </p>
         </div>
     </div>
 </body>

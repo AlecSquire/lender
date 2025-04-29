@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { router } from "@inertiajs/react";
-
 import {
     Card,
     CardHeader,
@@ -37,7 +36,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-export default function DashboardLendForm({ isAuthenticated }) {
+export default function DashboardLendForm({ isAuthenticated, addItem }) {
     const {
         register,
         handleSubmit,
@@ -45,6 +44,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
         formState: { errors },
         watch,
         setValue,
+        reset,
     } = useForm({
         defaultValues: {
             transaction_type: "lending",
@@ -60,17 +60,12 @@ export default function DashboardLendForm({ isAuthenticated }) {
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [showDescription, setShowDescription] = useState(false);
 
-    // Watch transaction type for dynamic placeholder text
     const transactionType = watch("transaction_type");
 
-    // Use a simpler approach with a wrapper div
     const FormWrapper = ({ children }) => {
-        // If authenticated, just render children normally
         if (isAuthenticated) {
             return <>{children}</>;
         }
-
-        // If not authenticated, add a click handler to the wrapper
         return (
             <div
                 onClick={(e) => {
@@ -80,35 +75,30 @@ export default function DashboardLendForm({ isAuthenticated }) {
                 }}
                 className="relative"
             >
-                {/* Semi-transparent overlay to indicate form is disabled */}
                 <div className="absolute inset-0 bg-background/50 z-10 cursor-pointer" />
                 {children}
             </div>
         );
     };
+
     const onSubmit = async (data) => {
         setIsLoading(true);
-
         try {
-            // First, get the CSRF cookie
             await fetch("/sanctum/csrf-cookie", {
                 method: "GET",
-                credentials: "include", // Ensures cookies are sent
+                credentials: "include",
             });
 
-            // Get the CSRF token from the cookie
             const getCsrfToken = () => {
                 const tokenMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
                 return tokenMatch ? decodeURIComponent(tokenMatch[1]) : null;
             };
 
             const token = getCsrfToken();
-
             if (!token) {
                 throw new Error("CSRF token not found");
             }
 
-            // Then, make the API request
             const response = await fetch("/api/items", {
                 method: "POST",
                 headers: {
@@ -116,7 +106,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
                     "Content-Type": "application/json",
                     "X-XSRF-TOKEN": token,
                 },
-                credentials: "include", // Ensures session is recognized
+                credentials: "include",
                 body: JSON.stringify(data),
             });
 
@@ -124,12 +114,17 @@ export default function DashboardLendForm({ isAuthenticated }) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || "Failed to submit");
             }
-            window.location.reload();
+
+            const newItem = await response.json();
+            addItem(newItem.data || newItem);
+            reset();
         } catch (error) {
+            console.error("Error submitting form:", error);
         } finally {
             setIsLoading(false);
         }
     };
+
     const handleLogin = () => {
         router.visit("/login");
     };
@@ -137,7 +132,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
     const handleRegister = () => {
         router.visit("/register");
     };
-    // Add this function in your component
+
     const handleRoughReturnChange = (value) => {
         const today = new Date();
         let returnDate = new Date(today);
@@ -160,10 +155,7 @@ export default function DashboardLendForm({ isAuthenticated }) {
                 break;
         }
 
-        // Format date as YYYY-MM-DD for the input field
         const formattedDate = returnDate.toISOString().split("T")[0];
-
-        // Set the value in your form
         setValue("return_date", formattedDate);
     };
 
@@ -185,7 +177,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                     <FormWrapper>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="space-y-5">
-                                {/* Transaction Type */}
                                 <div className="flex items-center justify-start gap-6 bg-muted/30 p-3 rounded-lg">
                                     <span className="text-sm font-medium">
                                         I am:
@@ -236,7 +227,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                                             Lending
                                                         </label>
                                                     </div>
-
                                                     <div className="flex items-center space-x-2">
                                                         <input
                                                             type="radio"
@@ -282,8 +272,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                         />
                                     </div>
                                 </div>
-
-                                {/* Item Name */}
                                 <div className="space-y-2">
                                     <Label
                                         htmlFor="item_name"
@@ -312,8 +300,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                         </p>
                                     )}
                                 </div>
-
-                                {/* Contact Name */}
                                 <div className="space-y-2">
                                     <Label
                                         htmlFor="contact_name"
@@ -343,8 +329,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                         </p>
                                     )}
                                 </div>
-
-                                {/* Contact Email */}
                                 <div className="space-y-2">
                                     <Label
                                         htmlFor="contact_email"
@@ -374,11 +358,8 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                         </p>
                                     )}
                                 </div>
-
-                                {/* Return Date */}
                                 <div className="space-y-2">
                                     <div className="grid grid-cols-2 gap-4">
-                                        {/* Rough Return Date - Left column */}
                                         <div>
                                             <Label
                                                 htmlFor="rough_return_period"
@@ -415,8 +396,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                                 </SelectContent>
                                             </Select>
                                         </div>
-
-                                        {/* Exact Return Date - Right column */}
                                         <div>
                                             <Label
                                                 htmlFor="return_date"
@@ -444,8 +423,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Description Toggle Button */}
                                 <Button
                                     type="button"
                                     variant="ghost"
@@ -467,8 +444,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                         </>
                                     )}
                                 </Button>
-
-                                {/* Optional Description Field */}
                                 {showDescription && (
                                     <div className="space-y-2 animate-in fade-in-50 duration-200">
                                         <Label
@@ -489,7 +464,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                                     </div>
                                 )}
                             </div>
-
                             <div className="mt-8">
                                 <Button
                                     type="submit"
@@ -532,8 +506,6 @@ export default function DashboardLendForm({ isAuthenticated }) {
                     </FormWrapper>
                 </CardContent>
             </Card>
-
-            {/* Authentication Modal */}
             <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>

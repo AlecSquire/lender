@@ -26,8 +26,7 @@
   },
   "include": [
     "resources/js/**/*.ts",
-    "resources/js/**/*.tsx",
     "resources/js/**/*.d.ts"
-, "resources/js/Pages/MasterTable/Index.jsx", "resources/js/Pages/MasterTable/DataTable.jsx", "resources/js/Pages/MasterTable/columns.jsx", "resources/js/Pages/Items.jsx", "resources/js/Pages/DashboardLendForm.jsx"  ],
+, "resources/js/Pages/MasterTable/Index.jsx", "resources/js/Pages/MasterTable/DataTable.jsx", "resources/js/Pages/MasterTable/columns.jsx", "resources/js/Pages/Items.jsx", "resources/js/Pages/DashboardLendForm.jsx", "resources/js/Components/theme-provider.jsx"  ],
   "exclude": ["node_modules"]
 }

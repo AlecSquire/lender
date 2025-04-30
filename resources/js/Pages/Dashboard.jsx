@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,18 +8,18 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+} from "@/Components/ui/card";
+import { Separator } from "@/Components/ui/separator";
 import {
     SidebarInset,
     SidebarProvider,
     SidebarTrigger,
-} from "@/components/ui/sidebar";
+} from "@/Components/ui/sidebar";
 import DashboardLendForm from "./DashboardLendForm";
 import { Bell, Calendar, Users, CheckCheck, X } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { differenceInDays, parseISO } from "date-fns";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/Components/mode-toggle";
 import Items from "./Items";
 
 export default function Dashboard({ payments }) {

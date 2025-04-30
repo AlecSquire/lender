@@ -19,7 +19,7 @@ import DashboardLendForm from "./DashboardLendForm";
 import { Bell, Calendar, Users, CheckCheck, X } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { differenceInDays, parseISO } from "date-fns";
-import { ModeToggle } from "@/Components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import Items from "./Items";
 
 export default function Dashboard({ payments }) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import Pagination from "@/Components/pagination";
+import Pagination from "@/components/pagination";
 import {
     Card,
     CardContent,

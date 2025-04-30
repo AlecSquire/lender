@@ -16,10 +16,10 @@ import {
     MessageCircle, // Added new icon for contact features (e.g., mobile, WhatsApp)
 } from "lucide-react";
 
-import { NavMain } from "@/Components/nav-main";
-import { NavProjects } from "@/Components/nav-projects";
-import { NavUser } from "@/Components/nav-user";
-import { TeamSwitcher } from "@/Components/team-switcher";
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import { ModeToggle } from "./mode-toggle";
 import {
     Sidebar,
@@ -27,7 +27,7 @@ import {
     SidebarFooter,
     SidebarHeader,
     SidebarRail,
-} from "@/Components/ui/sidebar";
+} from "@/components/ui/sidebar";
 
 // This is sample data.
 // const data = {

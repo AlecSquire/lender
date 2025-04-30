@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/Components/ui/button";
-import Pagination from "@/Components/pagination";
+import { Button } from "@/components/ui/button";
+import Pagination from "@/components/pagination";
 import {
     Card,
     CardContent,
@@ -8,14 +8,14 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/Components/ui/card";
+} from "@/components/ui/card";
 import {
     SidebarInset,
     SidebarProvider,
     SidebarTrigger,
-} from "@/Components/ui/sidebar";
-import { AppSidebar } from "@/Components/app-sidebar";
-import { Separator } from "@/Components/ui/separator";
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { Separator } from "@/components/ui/separator";
 
 export default function Users() {
     const [users, setUsers] = useState([]); // Stores the item data

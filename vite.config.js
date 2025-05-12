@@ -14,7 +14,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'resources/jsx'),
+      '@': path.resolve(__dirname, 'resources/js'), // Changed from 'resources/jsx' to 'resources/js'
     },
   },
 });

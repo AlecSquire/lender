@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Borrower;
 use App\Models\Item;
-use App\Models\Lender;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,18 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create users
-        $users = User::factory(10)->create();
-
-        // Create borrowers
-        $borrowers = Borrower::factory(50)->create();
-
-        // Create lenders
-        $lenders = Lender::factory(50)->create();
-
-        // Populate items table
-
-
+        // A known login for trying the app locally: test@example.com / password
+        $user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
 
         $itemsData = [
             ['name' => 'Cordless Drill', 'description' => 'A 20V cordless drill with variable speed and extra battery.'],
@@ -80,13 +70,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Wine Glass Set', 'description' => 'A set of six crystal wine glasses.'],
             ['name' => 'Coffee Grinder', 'description' => 'An electric burr coffee grinder with adjustable settings.'],
         ];
-        foreach ($itemsData as $item) {
-            Item::create([
-                'name' => $item['name'],
-                'description' => $item['description'],
-                'user_id' => $users->random()->id, // Assign a random user to each item
-                'borrower_id' => $borrowers->random()->id, // Assign a random borrower to each item
-                'isReturned' => true, // Default value or any appropriate value
+        foreach ($itemsData as $data) {
+            Item::factory()->for($user)->create([
+                'item_name' => $data['name'],
+                'item_description' => $data['description'],
             ]);
         }
     }

@@ -3,9 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Item;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -29,7 +27,6 @@ class ItemDue extends Mailable
     {
         return new Envelope(
             subject: 'Item Due',
-            to: $this->item->contact_email,
         );
     }
 
@@ -40,7 +37,6 @@ class ItemDue extends Mailable
     {
         return new Content(
             view: 'emails.due',
-
         );
     }
 

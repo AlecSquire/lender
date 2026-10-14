@@ -59,15 +59,12 @@ export default function Items({ items, setItems }) {
                 }
 
                 const updatedItem = await response.json();
-                // Update state with full item data, mapping is_returned to isReturned
                 setItems((prevItems) =>
                     prevItems.map((item) =>
                         item.id === id
                             ? {
                                   ...item,
                                   ...updatedItem.data,
-                                  isReturned:
-                                      updatedItem.data.is_returned === 1,
                               }
                             : item
                     )

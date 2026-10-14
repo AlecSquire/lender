@@ -2,49 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
 use App\Mail\ItemDue;
 use App\Mail\ItemReturned;
 use App\Models\Item;
-use Illuminate\Support\Facades\Mail;
 use App\Traits\ApiResponses;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class NotificationController extends Controller
 {
     use ApiResponses;
 
-    public function markAsReturned(Request $request) {
-       $request->validate([
-            'item_id' => 'required|integer', // Changed 'id' to 'item_id' to match your route parameter
-        ]);
-
-        $item = Item::findOrFail($request->input('item_id'));
-
-        $item->is_returned = true;
-        $item->save();
-
-        $user = Auth::user();
-
-Mail::to($user->email)->send(new ItemReturned($item, $user));
-
-        return $this->ok('Notification sent successfully');
-
-    }
-
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'id' => 'integer'
+        $validated = $request->validate([
+            'id' => ['required', 'integer'],
         ]);
 
-        $item = Item::findOrFail($request->input('id'));
+        $item = Item::findOrFail($validated['id']);
+
+        Gate::authorize('update', $item);
 
         Mail::to($item->contact_email)->send(new ItemDue($item));
 
-        return $this->ok('Notification sent successfully');
+        return $this->ok('Reminder sent');
+    }
 
+    public function markAsReturned(Item $item): View
+    {
+        // Clicking the link twice shouldn't email the owner twice
+        if (! $item->isReturned) {
+            $item->update(['isReturned' => true]);
+
+            Mail::to($item->user->email)->send(new ItemReturned($item, $item->user));
+        }
+
+        return view('item-returned', ['item' => $item]);
     }
 }

@@ -7,60 +7,49 @@ use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-
-
-// use Illuminate\Pagination\Paginator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ItemController extends Controller
 {
     use ApiResponses;
 
-    /**
-     * Display a listing of the resource.
-     */
-    // List all items
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return $this->ok('Items fetched successfully', Auth::user()->items);
+        $items = $request->user()->items()->orderBy('return_date')->get();
+
+        return $this->ok('Items fetched successfully', ItemResource::collection($items));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ItemRequest $request): ItemResource
     {
-        $data = $request->validated();
-        $data['user_id'] = Auth::id();
+        $item = $request->user()->items()->create($request->validated());
 
-        $item = Item::create($data);
         return new ItemResource($item);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Item $id): ItemResource
+    public function show(Item $item): ItemResource
     {
-        return new ItemResource($id);
+        Gate::authorize('view', $item);
+
+        return new ItemResource($item);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(ItemRequest $request, Item $id): ItemResource
+    public function update(ItemRequest $request, Item $item): ItemResource
     {
-        $id->update($request->validated());
+        Gate::authorize('update', $item);
 
-        return new ItemResource($id);
+        $item->update($request->validated());
+
+        return new ItemResource($item);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Item $id): JsonResponse
+    public function destroy(Item $item): JsonResponse
     {
-        $id->delete();
+        Gate::authorize('delete', $item);
+
+        $item->delete();
+
         return $this->ok('Item deleted successfully');
     }
 }

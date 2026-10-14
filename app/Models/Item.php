@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
-
 
 class Item extends Model
-// class Item extends UserOwnedModel
 {
     /** @use HasFactory<\Database\Factories\ItemFactory> */
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * user_id is deliberately not fillable. Items are always created through
+     * $user->items()->create(), so nobody can post an item onto someone else.
      *
      * @var array<int, string>
      */
@@ -26,38 +24,31 @@ class Item extends Model
         'transaction_type',
         'item_name',
         'item_description',
-        'isReturned',
-        'borrower_id',
-        'user_id',
         'return_date',
         'isReturned',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [];
+    // Matches the column default, so a freshly created item isn't sent back as null
+    protected $attributes = [
+        'isReturned' => false,
+    ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
-        return [];
+        return [
+            'return_date' => 'date',
+            'isReturned' => 'boolean',
+        ];
     }
-
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function resolveRouteBinding($value, $field = null)
+    public function scopeOverdue(Builder $query): void
     {
-        return $this->where('user_id', Auth::id())->where('id', $value)->firstOrFail();
+        $query->where('isReturned', false)
+            ->whereDate('return_date', '<', today());
     }
 }

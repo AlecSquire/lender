@@ -70,22 +70,15 @@
                 <p><em>Aka:</em> {{ $item->item_description }}</p>
             @endif
 
-            <p><strong>Return Deadline:</strong> {{ $item->return_date }} (No, seriously. We mean it.)</p>
+            <p><strong>Return Deadline:</strong> {{ $item->return_date->format('j F Y') }} (No, seriously. We mean it.)</p>
         </div>
 
         <p>Surprise! Remember {{ $item->item_name }}? Shocking, I know, but we actually want it back. Crazy concept,
             right? Our records show it's due for return.</p>
 
-        <p>Hit the button to mark it as returned:</p>
+        <p>Already handed it back? Hit the button and we'll let them know.</p>
 
-        <a href="{{ route('item.return.notify', ['item_id' => $item->id]) }} class='cta-button' ">Mark as
-            Returned</a>Mark as
-        Returned</a>
-
-        <p>If you believe you have already returned the item, just hit the button below and we will see handle the next
-            steps.</p>
-
-
+        <a href="{{ URL::signedRoute('item.return.notify', ['item' => $item]) }}" class="cta-button">Mark as Returned</a>
 
         <div class="footer">
             <p>© {{ date('Y') }} {{ config('app.name') }} - Borrowed, but never forgotten

@@ -60,7 +60,7 @@
     <div class="container">
         <h1 class="header">Item marked as returned</h1>
 
-        <p>Hey there, {{ $item->contact_name }}!</p>
+        <p>Good news, {{ $user->name }}! {{ $item->contact_name }} says they've given it back.</p>
 
         <div class="item-details">
             <strong>Item in Question:</strong>

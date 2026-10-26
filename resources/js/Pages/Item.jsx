@@ -43,6 +43,12 @@ import { router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
+// Laravel refreshes the XSRF-TOKEN cookie on every response, so it stays valid after login
+const getCsrfToken = () => {
+    const tokenMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+    return tokenMatch ? decodeURIComponent(tokenMatch[1]) : "";
+};
+
 export default function Item({ auth }) {
     const [loading, setLoading] = useState(true);
     const [item, setItem] = useState(null);
@@ -126,10 +132,7 @@ export default function Item({ auth }) {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    "X-CSRF-TOKEN":
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute("content") || "",
+                    "X-XSRF-TOKEN": getCsrfToken(),
                 },
                 body: JSON.stringify(item),
             });
@@ -157,10 +160,7 @@ export default function Item({ auth }) {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
-                    "X-CSRF-TOKEN":
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute("content") || "",
+                    "X-XSRF-TOKEN": getCsrfToken(),
                 },
                 body: JSON.stringify({ notes }),
             });
@@ -187,10 +187,7 @@ export default function Item({ auth }) {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN":
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute("content") || "",
+                    "X-XSRF-TOKEN": getCsrfToken(),
                 },
             });
 
@@ -206,10 +203,7 @@ export default function Item({ auth }) {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN":
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute("content") || "",
+                    "X-XSRF-TOKEN": getCsrfToken(),
                 },
                 body: JSON.stringify({ isReturned }),
             });
